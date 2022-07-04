@@ -49,5 +49,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Course.Infrastructure\CourseDiary.Infrastructure.csproj">
+      <Project>{57B6DF31-FF5C-41F3-BD96-6149722293A0}</Project>
+      <Name>CourseDiary.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CourseDiary.Domain\CourseDiary.Domain.csproj">
+      <Project>{7303F46D-6B36-4371-81BB-E8AFB769C71F}</Project>
+      <Name>CourseDiary.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
