@@ -41,5 +41,42 @@ namespace CourseDiary.Infrastructure
             }
             return false;
         }
+
+        public Trainer GetTrainer(string trainerName)
+        {
+            Trainer trainer = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string commandText = $"SELECT * FROM [Trainers] WHERE [Name] = @Name";
+
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@Name", SqlDbType.NVarChar, 255).Value = trainerName;
+
+                    SqlDataReader dataReader = command.ExecuteReader();
+
+                    dataReader.Read();
+
+                    trainer = new Trainer
+                    {
+                        Name = dataReader["UserLogin"].ToString(),
+                        Password = dataReader["UserPassword"].ToString(),
+                    };
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                trainer = null;
+            }
+
+            return trainer;
+        }
     }
 }

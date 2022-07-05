@@ -10,6 +10,7 @@ namespace CourseDiary.Domain.Interfaces
     public interface ITrainerRepository
     {
         Task<bool> AddTrainer(Trainer trainer);
+        Trainer GetTrainer(string trainerName);
 
     }
 }
