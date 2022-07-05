@@ -23,9 +23,9 @@ namespace CourseDiary.Domain
             return await _trainerRepository.AddTrainer(trainer);
         }
 
-        public bool CheckTrainerCredentials(string trainerName, string trainerPassword)
+        public bool CheckTrainerCredentials(string email, string trainerPassword)
         {
-            Trainer trainer = _trainerRepository.GetTrainer(trainerName);
+            Trainer trainer = _trainerRepository.GetTrainer(email);
             var success = trainer != null && trainer.Password == trainerPassword;
             return success;
         }
