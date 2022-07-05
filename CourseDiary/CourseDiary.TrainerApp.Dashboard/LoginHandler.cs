@@ -47,10 +47,10 @@ namespace CourseDiary.TrainerApp.Dashboard
             string username = _cliHelper.GetStringFromUser("Add username");
             string password = _cliHelper.GetStringFromUser("Add pasword");
 
-            bool correctCredentials = _trainerService.CheckUserCredentials(username, password);
+            bool correctCredentials = _trainerService.CheckTrainerCredentials(username, password);
 
             if (correctCredentials)
-            {
+            {                 
                 Console.WriteLine($"Logon successful. Hello {username}");
             }
             else

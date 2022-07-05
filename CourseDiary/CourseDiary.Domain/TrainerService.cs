@@ -23,11 +23,11 @@ namespace CourseDiary.Domain
             return await _trainerRepository.AddTrainer(trainer);
         }
 
-        public Trainer CheckTrainerCredentials(string trainerName, string trainerPassword)
+        public bool CheckTrainerCredentials(string trainerName, string trainerPassword)
         {
             Trainer trainer = _trainerRepository.GetTrainer(trainerName);
             var success = trainer != null && trainer.Password == trainerPassword;
-            return trainer;
+            return success;
         }
     }
 }

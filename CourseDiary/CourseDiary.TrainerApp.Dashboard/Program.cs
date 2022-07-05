@@ -27,7 +27,11 @@ namespace CourseDiary.TrainerApp.Dashboard
 
             if (!string.IsNullOrEmpty(loggedUser))
             {
-                _trainerActionsHandler.ProgramLoop(loggedUser);
+                bool exit;
+                do
+                {
+                    exit = _trainerActionsHandler.ProgramLoop(loggedUser);
+                } while(!exit);
             }
         }
     }
