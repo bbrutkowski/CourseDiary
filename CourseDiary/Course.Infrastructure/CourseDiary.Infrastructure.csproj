@@ -7,8 +7,8 @@
     <ProjectGuid>{57B6DF31-FF5C-41F3-BD96-6149722293A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Course.Infrastructure</RootNamespace>
-    <AssemblyName>Course.Infrastructure</AssemblyName>
+    <RootNamespace>CourseDiary.Infrastructure</RootNamespace>
+    <AssemblyName>CourseDiary.Infrastructure</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,10 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CourseRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\CourseDiary.Domain\CourseDiary.Domain.csproj">
+      <Project>{7303f46d-6b36-4371-81bb-e8afb769c71f}</Project>
+      <Name>CourseDiary.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="SQL\Script1.sql" />
   </ItemGroup>
