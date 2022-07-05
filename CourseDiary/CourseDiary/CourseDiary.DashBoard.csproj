@@ -43,19 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CliHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StudentHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Course.Infrastructure\CourseDiary.Infrastructure.csproj">
-      <Project>{57B6DF31-FF5C-41F3-BD96-6149722293A0}</Project>
+      <Project>{57b6df31-ff5c-41f3-bd96-6149722293a0}</Project>
       <Name>CourseDiary.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\CourseDiary.Domain\CourseDiary.Domain.csproj">
-      <Project>{7303F46D-6B36-4371-81BB-E8AFB769C71F}</Project>
+      <Project>{7303f46d-6b36-4371-81bb-e8afb769c71f}</Project>
       <Name>CourseDiary.Domain</Name>
     </ProjectReference>
   </ItemGroup>
