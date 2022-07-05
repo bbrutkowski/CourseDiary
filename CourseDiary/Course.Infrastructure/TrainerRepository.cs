@@ -42,7 +42,7 @@ namespace CourseDiary.Infrastructure
             return false;
         }
 
-        public Trainer GetTrainer(string trainerName)
+        public Trainer GetTrainer(string email)
         {
             Trainer trainer = null;
 
@@ -52,10 +52,10 @@ namespace CourseDiary.Infrastructure
                 {
                     connection.Open();
 
-                    string commandText = $"SELECT * FROM [Trainers] WHERE [Name] = @Name";
+                    string commandText = $"SELECT * FROM [Trainers] WHERE [Email] = @Email";
 
                     SqlCommand command = new SqlCommand(commandText, connection);
-                    command.Parameters.Add("@Name", SqlDbType.NVarChar, 255).Value = trainerName;
+                    command.Parameters.Add("@Email", SqlDbType.NVarChar, 255).Value = email;
 
                     SqlDataReader dataReader = command.ExecuteReader();
 
