@@ -2,6 +2,8 @@
 using CourseDiary.Domain.Models;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace CourseDiary.Domain
 {
@@ -26,7 +28,10 @@ namespace CourseDiary.Domain
             }
             DateTime dt = DateTime.ParseExact(course.BeginDate.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             course.BeginDate = dt;
+            course.State = State.Open;
             return await _courseRepository.Add(course);
         }
+
+        
     }
 }

@@ -1,0 +1,2 @@
+ALTER TABLE [Courses]
+ADD [State] VARCHAR(255);

@@ -5,6 +5,7 @@ using CourseDiary.Domain.Models;
 using System.Data.SqlClient;
 using System.Data;
 using System;
+using System.Collections.Generic;
 
 namespace CourseDiary.Infrastructure
 {
@@ -22,7 +23,7 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = $"INSERT INTO [Courses] ([Name],[BeginDate],[TrainerId],[PresenceTreshold],[HomeworkTreshold],[TestTreshold]) VALUES (@Name, @BeginDate, @TrainerId, @PresenceTreshold, @HomeworkTreshold, @TestTreshold)";
+                    string commandText = $"INSERT INTO [Courses] ([Name],[BeginDate],[TrainerId],[PresenceTreshold],[HomeworkTreshold],[TestTreshold],[State]) VALUES (@Name, @BeginDate, @TrainerId, @PresenceTreshold, @HomeworkTreshold, @TestTreshold, @State)";
                     SqlCommand command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
                     command.Parameters.Add("@BeginDate", SqlDbType.DateTime2).Value = course.BeginDate;
@@ -30,6 +31,7 @@ namespace CourseDiary.Infrastructure
                     command.Parameters.Add("@PresenceTreshold", SqlDbType.Float, 8).Value = course.PresenceTreshold;
                     command.Parameters.Add("@HomeworkTreshold", SqlDbType.Float, 8).Value = course.HomeworkTreshold;
                     command.Parameters.Add("@TestTreshold", SqlDbType.Float, 8).Value = course.TestTreshold;
+                    command.Parameters.Add("@State", SqlDbType.VarChar, 255).Value = course.State;
                     int rowsAffected = await command.ExecuteNonQueryAsync();
 
                     success = rowsAffected == 1;
@@ -44,6 +46,48 @@ namespace CourseDiary.Infrastructure
             }
 
             return success;
+        }
+
+        public async Task<List<Course>> GetAllCoursesAsync()
+        {
+            List<Course> courses = new List<Course>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = @"SELECT * FROM [Inspections]";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    SqlDataReader dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        Course course = new Course();
+                        course.Id = int.Parse(dataReader["Id"].ToString());
+                        course.Name = dataReader["Name"].ToString();
+                        course.BeginDate = DateTime.Parse(dataReader["BeginDate"].ToString());
+                        course.Trainer = new Trainer
+                        {
+                            //Todo: dodać trainera
+                        };
+                        course.PresenceTreshold = double.Parse(dataReader["TestTreshold"].ToString());
+                        course.HomeworkTreshold = double.Parse(dataReader["TestTreshold"].ToString());
+                        course.TestTreshold = double.Parse(dataReader["TestTreshold"].ToString());
+                        course.State = Enum.TryParse(dataReader["State"].ToString(), out State cos) ? cos : course.State;
+
+                        courses.Add(course);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                courses = null;
+            }
+
+            return courses;
         }
     }
 }
