@@ -1,15 +1,18 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CourseDiary.Domain.Models
 {
-    public class Trainer
+    public class Student
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
-        [MinLength(6)]
         public string Password { get; set; }
-        public string DateOfBirth { get; set; }
+        public DateTime BirthDate { get; set; }   
     }
 }
