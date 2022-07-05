@@ -10,7 +10,7 @@ namespace CourseDiary.TrainerApp.Dashboard
     {
         internal void ProgramLoop(string loggedUser)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); 
         }
     }
 }
