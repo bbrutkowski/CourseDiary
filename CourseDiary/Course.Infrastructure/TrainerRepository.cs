@@ -10,7 +10,7 @@ namespace CourseDiary.Infrastructure
 {
     public class TrainerRepository : ITrainerRepository
     {
-        private string _connectionString = ConfigurationManager.ConnectionStrings["CourseDiaryDbConnectionString"].ConnectionString;
+        private string _connectionString = ConfigurationManager.ConnectionStrings["CourseDiaryDBConnectionString"].ConnectionString;
 
         public async Task<bool> AddTrainer(Trainer trainer)
         {

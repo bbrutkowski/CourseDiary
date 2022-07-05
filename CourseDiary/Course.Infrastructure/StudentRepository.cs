@@ -10,7 +10,7 @@ namespace Course.Infrastructure
 {
     public class StudentRepository : IStudentRepository
     {
-        private string _connectionString = ConfigurationManager.ConnectionStrings["CourseDiaryDbConnectionString"].ConnectionString;
+        private string _connectionString = ConfigurationManager.ConnectionStrings["CourseDiaryDBConnectionString"].ConnectionString;
 
         public async Task AddStudentAsync(Student student)
         {

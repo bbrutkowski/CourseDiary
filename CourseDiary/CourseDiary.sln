@@ -5,11 +5,15 @@ VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseDiary.DashBoard", "CourseDiary\CourseDiary.DashBoard.csproj", "{77CBC7CD-905F-4E42-9132-E739E1FA974C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ForAdmin", "ForAdmin", "{0F4C538A-902E-4551-BADA-657FC5978820}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Admin", "1.Admin", "{0F4C538A-902E-4551-BADA-657FC5978820}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseDiary.Infrastructure", "Course.Infrastructure\CourseDiary.Infrastructure.csproj", "{57B6DF31-FF5C-41F3-BD96-6149722293A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseDiary.Domain", "CourseDiary.Domain\CourseDiary.Domain.csproj", "{7303F46D-6B36-4371-81BB-E8AFB769C71F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{0897EA98-39ED-4F0A-9AB9-CB9F15033C7D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Trainer", "2.Trainer", "{56BA8C3E-3CE0-46BA-854B-E2ABFA9E0E75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,8 +39,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{77CBC7CD-905F-4E42-9132-E739E1FA974C} = {0F4C538A-902E-4551-BADA-657FC5978820}
-		{57B6DF31-FF5C-41F3-BD96-6149722293A0} = {0F4C538A-902E-4551-BADA-657FC5978820}
-		{7303F46D-6B36-4371-81BB-E8AFB769C71F} = {0F4C538A-902E-4551-BADA-657FC5978820}
+		{57B6DF31-FF5C-41F3-BD96-6149722293A0} = {0897EA98-39ED-4F0A-9AB9-CB9F15033C7D}
+		{7303F46D-6B36-4371-81BB-E8AFB769C71F} = {0897EA98-39ED-4F0A-9AB9-CB9F15033C7D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {319544EE-E064-4ECE-992E-60F562396745}
