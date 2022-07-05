@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CourseService.cs" />
+    <Compile Include="Interfaces\ICourseRepository.cs" />
+    <Compile Include="Interfaces\ICourseService.cs" />
+    <Compile Include="Models\Course.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Interfaces\IStudentRepository.cs" />
     <Compile Include="Models\Student.cs" />
