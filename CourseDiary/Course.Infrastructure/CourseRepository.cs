@@ -22,7 +22,7 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = $"INSERT INTO [Course] ([Name],[BeginDate],[TrainerId],[PresenceTreshold],[HomeworkTreshold],[TestTreshold]) VALUES (@Name, @BeginDate, @TrainerId, @PresenceTreshold, @HomeworkTreshold, @TestTreshold)";
+                    string commandText = $"INSERT INTO [Courses] ([Name],[BeginDate],[TrainerId],[PresenceTreshold],[HomeworkTreshold],[TestTreshold]) VALUES (@Name, @BeginDate, @TrainerId, @PresenceTreshold, @HomeworkTreshold, @TestTreshold)";
                     SqlCommand command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
                     command.Parameters.Add("@BeginDate", SqlDbType.DateTime2).Value = course.BeginDate;

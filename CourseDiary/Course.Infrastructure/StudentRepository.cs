@@ -6,7 +6,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace Course.Infrastructure
+namespace CourseDiary.Infrastructure
 {
     public class StudentRepository : IStudentRepository
     {
