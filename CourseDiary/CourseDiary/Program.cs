@@ -22,12 +22,12 @@ namespace CourseDiary
 
         private void Run()
         {
-            Console.WriteLine("Hello! What do you want to do?");
+            Console.WriteLine("Hello! What do you want to do? AddTrainer/");
             string action = Console.ReadLine();
 
             switch (action)
             {
-                case "Add trainer":
+                case "AddTrainer":
                     AddTrainer();
                         break;
                 default:
