@@ -11,6 +11,7 @@ namespace CourseDiary.Domain
     public interface IStudentService
     {
         Task AddStudentAsync(Student student);
+        Task<List<Student>> GetAllStudentsAsync();
     }
 
     public class StudentService : IStudentService

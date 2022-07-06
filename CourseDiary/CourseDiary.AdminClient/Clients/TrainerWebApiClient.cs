@@ -1,6 +1,7 @@
 ﻿using CourseDiary.AdminClient.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace CourseDiary.AdminClient.Clients
             _client = new HttpClient();
         }
 
-        public async Task<bool> Add(Trainer trainer)
+        public async Task<bool> AddTrainer(Trainer trainer)
         {
             try
             {
@@ -37,6 +38,52 @@ namespace CourseDiary.AdminClient.Clients
                 Console.WriteLine("\nException Caught!");
                 Console.WriteLine("Message :{0} ", e.Message);
                 return false;
+            }
+        }
+
+        public async Task<List<Trainer>> GetAllTrainers()
+        {
+            try
+            {
+                var responseBody = await _client.GetAsync(@"http://localhost:9000/api/v1/trainer");
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return new List<Trainer>();
+                }
+
+                return JsonConvert.DeserializeObject<List<Trainer>>(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return new List<Trainer>();
+            }
+        }
+
+        public async Task<Trainer> GetTrainer(int id)
+        {
+            try
+            {
+                var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/trainer/{id}");
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return new Trainer();
+                }
+
+                return JsonConvert.DeserializeObject<Trainer>(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return new Trainer();
             }
         }
     }

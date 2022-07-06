@@ -1,6 +1,8 @@
 ﻿using CourseDiary.Domain;
 using CourseDiary.Domain.Models;
 using CourseDiary.Infrastructure;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace CourseDiary.Server.Controllers
@@ -21,6 +23,13 @@ namespace CourseDiary.Server.Controllers
         public async void AddStudent([FromBody] Student student)
         {
             await _studentService.AddStudentAsync(student);
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<List<Student>> GetAllStudents()
+        {
+            return await _studentService.GetAllStudentsAsync();
         }
     }
 }

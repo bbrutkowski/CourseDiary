@@ -1,6 +1,7 @@
 ﻿using CourseDiary.Domain.Interfaces;
 using CourseDiary.Domain.Models;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -42,7 +43,55 @@ namespace CourseDiary.Infrastructure
             return false;
         }
 
-        public Trainer GetTrainer(string email)
+        public async Task<List<Trainer>> GetAllTrainers()
+        {
+            List<Trainer> trainers = new List<Trainer>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = $"SELECT * FROM [Trainers]";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+
+                    while (await dataReader.ReadAsync())
+                    {
+                        Trainer trainer;
+
+                        try
+                        {
+                            trainer = new Trainer
+                            {
+                                Id = int.Parse(dataReader["Id"].ToString()),
+                                Name = dataReader["Name"].ToString(),
+                                Surname = dataReader["Surname"].ToString(),
+                                Email = dataReader["Email"].ToString(),
+                                Password = dataReader["Password"].ToString(),
+                                DateOfBirth = DateTime.Parse(dataReader["DateOfBirth"].ToString())
+                            };
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+
+                        trainers.Add(trainer);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                trainers = new List<Trainer>();
+            }
+
+            return trainers;
+        }
+
+        public async Task<Trainer> GetTrainerByEmail(string email)
         {
             Trainer trainer = null;
 
@@ -57,14 +106,55 @@ namespace CourseDiary.Infrastructure
                     SqlCommand command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@Email", SqlDbType.NVarChar, 255).Value = email;
 
-                    SqlDataReader dataReader = command.ExecuteReader();
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
 
                     dataReader.Read();
 
                     trainer = new Trainer
                     {
-                        Name = dataReader["UserLogin"].ToString(),
-                        Password = dataReader["UserPassword"].ToString(),
+                        Email = dataReader["Email"].ToString(),
+                        Password = dataReader["Password"].ToString(),
+                    };
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                trainer = null;
+            }
+
+            return trainer;
+        }
+
+        public async Task<Trainer> GetTrainer(int id)
+        {
+            Trainer trainer = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string commandText = $"SELECT * FROM [Trainers] WHERE [Id] = @Id";
+
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@Id", SqlDbType.NVarChar, 255).Value = id;
+
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+
+                    dataReader.Read();
+
+                    trainer = new Trainer
+                    {
+                        Id = id,
+                        Name = dataReader["Name"].ToString(),
+                        Surname = dataReader["Surname"].ToString(),
+                        Email = dataReader["Email"].ToString(),
+                        Password = dataReader["Password"].ToString(),
+                        DateOfBirth = DateTime.Parse(dataReader["DateOfBirth"].ToString())
                     };
 
                     connection.Close();
