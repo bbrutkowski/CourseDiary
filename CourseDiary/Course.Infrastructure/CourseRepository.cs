@@ -5,6 +5,7 @@ using CourseDiary.Domain.Models;
 using System.Data.SqlClient;
 using System.Data;
 using System;
+using System.Collections.Generic;
 
 namespace CourseDiary.Infrastructure
 {
@@ -26,7 +27,7 @@ namespace CourseDiary.Infrastructure
                     SqlCommand command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
                     command.Parameters.Add("@BeginDate", SqlDbType.DateTime2).Value = course.BeginDate;
-                    command.Parameters.Add("@TrainerId", SqlDbType.Int).Value = course.Trainer.Id;
+                    command.Parameters.Add("@TrainerId", SqlDbType.Int).Value = course.Trainer;
                     command.Parameters.Add("@PresenceTreshold", SqlDbType.Float, 8).Value = course.PresenceTreshold;
                     command.Parameters.Add("@HomeworkTreshold", SqlDbType.Float, 8).Value = course.HomeworkTreshold;
                     command.Parameters.Add("@TestTreshold", SqlDbType.Float, 8).Value = course.TestTreshold;
@@ -44,6 +45,73 @@ namespace CourseDiary.Infrastructure
             }
 
             return success;
+        }
+
+        public async Task<List<Course>> GetAllCourses()
+        {
+            List<Course> courses = new List<Course>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = $"SELECT * FROM [Courses]";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+
+                    while (await dataReader.ReadAsync())
+                    {
+                       Course course;
+
+                        try
+                        {
+                            course = new Course
+                            {
+                                Name = dataReader["Name"].ToString(),                              
+                            };
+                            courses.Add(course);
+
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return courses;
+        }
+
+        public async Task<bool> UpdateCourse(Course course)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandSql = "UPDATE Courses SET Name = @Name, TrainerId = @TrainerId WHERE Name = @Name";
+                    SqlCommand command = new SqlCommand(commandSql, connection);
+                    command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
+                    command.Parameters.Add("@TrainerId", SqlDbType.Int).Value = course.Trainer;
+
+                    if (command.ExecuteNonQuery() == 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return false;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CourseDiary.Domain;
+using CourseDiary.Domain.Models;
 using CourseDiary.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,11 @@ namespace CourseDiary.TrainerApp.Dashboard
             _trainerService = new TrainerService(trainerRepository);
         }
 
-        public string LoginLoop()
+        public Trainer LoginLoop()
         {
             bool exit = false;
-            string email = null;
+            Trainer trainer = null;
+
 
             while (!exit)
             {
@@ -32,8 +34,12 @@ namespace CourseDiary.TrainerApp.Dashboard
                 switch (operation)
                 {
                     case "Login":
-                        email = LoginUser();
-                        exit = !string.IsNullOrEmpty(email);
+                        trainer = LoginUser();
+                        if (trainer != null)
+                        {
+                            break;
+                        }
+
                         break;
                     case "Exit":
                         exit = true;
@@ -43,10 +49,12 @@ namespace CourseDiary.TrainerApp.Dashboard
                 }
             }
 
-            return email;
+
+            return trainer;
+
         }
 
-        private string LoginUser()
+        private Trainer LoginUser()
         {
             string email = _cliHelper.GetStringFromUser("Add email");
             string password = _cliHelper.GetStringFromUser("Add pasword");
@@ -63,7 +71,10 @@ namespace CourseDiary.TrainerApp.Dashboard
                 return null;
             }
 
-            return email;
+            var newUser = _trainerService.GetTrainer(email);
+
+            return newUser;
+
         }
     }
 }

@@ -9,5 +9,8 @@ namespace CourseDiary.Domain.Interfaces
     public interface ICourseService
     {
         Task<bool> Add(Course course);
+        Task<List<Course>> GetAllCourses();
+        Task<bool> UpdateCourse(Course course);
+
     }
 }

@@ -2,6 +2,7 @@
 using CourseDiary.Domain.Models;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 
 namespace CourseDiary.Domain
 {
@@ -27,6 +28,16 @@ namespace CourseDiary.Domain
             DateTime dt = DateTime.ParseExact(course.BeginDate.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             course.BeginDate = dt;
             return await _courseRepository.Add(course);
+        }
+
+        public async Task<List<Course>> GetAllCourses()
+        {
+            return await _courseRepository.GetAllCourses();
+        }
+
+        public async Task<bool> UpdateCourse(Course course)
+        {
+            return await _courseRepository.UpdateCourse(course);
         }
     }
 }

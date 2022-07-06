@@ -63,8 +63,9 @@ namespace CourseDiary.Infrastructure
 
                     trainer = new Trainer
                     {
-                        Name = dataReader["UserLogin"].ToString(),
-                        Password = dataReader["UserPassword"].ToString(),
+                        Id = int.Parse(dataReader["Id"].ToString()),
+                        Name = dataReader["Name"].ToString(),
+                        Email = dataReader["Email"].ToString(),
                     };
 
                     connection.Close();
