@@ -37,13 +37,7 @@ namespace CourseDiary.Domain
 
             activeCourses = courses
                 .Where(x=>x.State == State.Open)
-                .ToList();
-
-            //todo: to trzeba dorzucić do clienta
-            //foreach(Course course in activeCourses)
-            //{
-            //    Console.WriteLine($"Course name:  {course.Name} \n Trainer:  {course.Trainer.Name} {course.Trainer.Surname} \n Begin date: {course.BeginDate} \n");
-            //}
+                .ToList();           
 
             return activeCourses;
         }
@@ -51,7 +45,12 @@ namespace CourseDiary.Domain
         public async Task<List<Course>> GetAllCourses()
         {
             return await _courseRepository.GetAllCoursesAsync();
-        }        
+        }  
+        
+        public async Task<bool> AddHomeworkResult(HomeworkResults result)
+        {
+            return await _courseRepository.AddHomeworkResult(result);
+        }
 
     }
 }
