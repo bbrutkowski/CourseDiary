@@ -22,6 +22,7 @@ namespace CourseDiary.TrainerClient.Clients
             {
                 var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/course");
 
+
                 var result = await responseBody.Content.ReadAsStringAsync();
 
                 if (!responseBody.IsSuccessStatusCode)
@@ -86,6 +87,7 @@ namespace CourseDiary.TrainerClient.Clients
                 return false;
             }
         }
+
 
     }
 }

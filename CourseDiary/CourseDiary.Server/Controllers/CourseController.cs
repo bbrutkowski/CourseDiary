@@ -18,6 +18,13 @@ namespace CourseDiary.Server.Controllers
             _courseService = new CourseService(courseRepository);
         }
 
+        [HttpGet]
+        [Route("")]
+        public async Task<List<Course>> GetAllCourses()
+        {
+            return await _courseService.GetAllCourses();
+        }
+
         [HttpPost]
         [Route("")]
         public async void AddCourse([FromBody] Course course)

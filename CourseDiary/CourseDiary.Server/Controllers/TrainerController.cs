@@ -39,6 +39,13 @@ namespace CourseDiary.Server.Controllers
             return await _trainerService.GetTrainer(id);
         }
 
+        [HttpGet]
+        [Route("{email}")]
+        public async Task<Trainer> GetTrainer(string email)
+        {
+            return await _trainerService.GetTrainer(email);
+        }
+
         [HttpPost]
         [Route("credentials")]
         public async Task<bool> CheckTrainerCredentials([FromBody] string email, [FromBody] string password)

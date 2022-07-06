@@ -8,7 +8,7 @@ namespace CourseDiary.TrainerClient
     internal class TrainerClientActionHandler
     {
         private readonly CliHelper _cliHelper;
-        private readonly TrainerWebApiClient _trainerWebApiClient;
+        private readonly TrainerClientLoginHandler _trainerClientLoginHandler;
         private readonly CourseWebApiClient _courseWebApiClient;
         private string _loggedUser = null;
         public bool ProgramLoop(string loggedUser)
@@ -42,6 +42,7 @@ namespace CourseDiary.TrainerClient
                     case "9":
                         break;
                     case "10":
+                        _trainerClientLoginHandler.LoginLoop();
                         exit = true;
                         break;
                     default:
@@ -138,6 +139,55 @@ namespace CourseDiary.TrainerClient
             foreach(Course course in allActiveCourses)
             {
                 Console.WriteLine($"Course name:  {course.Name} \n Trainer:  {course.Trainer.Name} {course.Trainer.Surname} \n Begin date: {course.BeginDate} \n");
+            }
+        }
+
+        public async void SelectActiveCourse()
+        {
+            var allCourses = await _courseWebApiClient.GetAllCourses();
+            foreach (var course in allCourses)
+            {
+                Console.WriteLine($"{course.Name}");
+            }
+            var selectCourse = _cliHelper.GetStringFromUser("Enter name of course you want to assign");
+            MenuForActivCourse(selectCourse);
+        }
+
+        private void MenuForActivCourse(string selectedCourse)
+        {
+            var switchOption = _cliHelper.GetStringFromUser("What do you want to do?");
+            var exit = false;
+            while (!exit)
+            {
+                switch (switchOption)
+                {
+                    case "1":
+                        break;
+                    case "2":
+                        break;
+                    case "3":
+                        break;
+                    case "4":
+                        break;
+                    case "5":
+                        break;
+                    case "6":
+                        break;
+                    case "7":
+                        break;
+                    case "8":
+                        break;
+                    case "9":
+                        break;
+                    case "10":
+                        ProgramLoop(_loggedTrainer);
+                        exit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Unsupported option");
+                        break;
+                }
+
             }
         }
     }

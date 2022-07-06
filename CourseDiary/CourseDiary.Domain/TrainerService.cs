@@ -9,7 +9,7 @@ namespace CourseDiary.Domain
     {
         Task<bool> AddTrainer(Trainer trainer);
         Task<List<Trainer>> GetAllTrainers();
-        bool CheckTrainerCredentials(string email, string trainerPassword);
+        Task<bool> CheckTrainerCredentials(string email, string trainerPassword);
         Task<Trainer> GetTrainer(int id);
     }
 
@@ -43,9 +43,9 @@ namespace CourseDiary.Domain
             return await _trainerRepository.GetTrainer(id);
         }
 
-        public Trainer GetTrainer(string trainerMail)
+        public async Task<Trainer> GetTrainer(string trainerMail)
         {
-            return _trainerRepository.GetTrainer(trainerMail);
+            return await _trainerRepository.GetTrainerByEmail(trainerMail);
         }
     }
 }

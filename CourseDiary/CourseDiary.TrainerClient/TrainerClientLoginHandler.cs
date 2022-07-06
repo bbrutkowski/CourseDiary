@@ -1,4 +1,5 @@
 ﻿using CourseDiary.TrainerClient.Clients;
+using CourseDiary.TrainerClient.Models;
 using System;
 
 namespace CourseDiary.TrainerClient
@@ -7,19 +8,28 @@ namespace CourseDiary.TrainerClient
     {
         private readonly CliHelper _cliHelper;
         private readonly TrainerWebApiClient _trainerWebApiClient;
-        public string LoginLoop()
+
+        public TrainerClientLoginHandler()
+        {
+            _cliHelper = new CliHelper();
+            _trainerWebApiClient = new TrainerWebApiClient();
+        }
+        public Trainer LoginLoop()
         {
             bool exit = false;
-            string email = null;
+            Trainer trainer = null;
 
             while (!exit)
             {
-                string operation = _cliHelper.GetStringFromUser("Choose action [Login, Exit]");
+                string operation = _cliHelper.GetStringFromUser("[Login] Choose action [Login, Exit]");
                 switch (operation)
                 {
                     case "Login":
-                        email = LoginUser();
-                        exit = !string.IsNullOrEmpty(email);
+                        trainer = LoginUser();
+                        if (trainer != null)
+                        {
+                            break;
+                        }
                         break;
                     case "Exit":
                         exit = true;
@@ -29,10 +39,10 @@ namespace CourseDiary.TrainerClient
                 }
             }
 
-            return email;
+            return trainer;
         }
 
-        private string LoginUser()
+        private Trainer LoginUser()
         {
             string email = _cliHelper.GetStringFromUser("Add email");
             string password = _cliHelper.GetStringFromUser("Add pasword");
@@ -49,7 +59,9 @@ namespace CourseDiary.TrainerClient
                 return null;
             }
 
-            return email;
+            var newUser = _trainerWebApiClient.GetTrainerByEmail(email).Result;
+
+            return newUser;
         }
     }
 }

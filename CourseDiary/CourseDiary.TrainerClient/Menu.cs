@@ -1,10 +1,8 @@
-﻿using System;
+﻿using CourseDiary.TrainerClient.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CourseDiary.TrainerApp.Dashboard
+namespace CourseDiary.TrainerClient
 {
     public class Menu
     {

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{401C471E-9A24-4C6C-B058-4DFDD0E87CF1}</ProjectGuid>
+    <ProjectGuid>{4D0DE334-BED5-459D-B2EB-15CA1AD95220}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CourseDiary.TrainerApp.Dashboard</RootNamespace>
-    <AssemblyName>CourseDiary.TrainerApp.Dashboard</AssemblyName>
+    <RootNamespace>CourseDiary.StudentClient</RootNamespace>
+    <AssemblyName>CourseDiary.StudentClient</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,24 +44,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CliHelper.cs" />
-    <Compile Include="LoginHandler.cs" />
+    <Compile Include="Clients\StudentWebApiClient.cs" />
+    <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\StudentInCourse.cs" />
+    <Compile Include="Models\Trainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TrainerActionsHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Course.Infrastructure\CourseDiary.Infrastructure.csproj">
-      <Project>{57b6df31-ff5c-41f3-bd96-6149722293a0}</Project>
-      <Name>CourseDiary.Infrastructure</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CourseDiary.Domain\CourseDiary.Domain.csproj">
       <Project>{7303f46d-6b36-4371-81bb-e8afb769c71f}</Project>
       <Name>CourseDiary.Domain</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
