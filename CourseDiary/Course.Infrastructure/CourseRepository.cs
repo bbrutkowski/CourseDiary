@@ -96,5 +96,37 @@ namespace CourseDiary.Infrastructure
 
             return courses;
         }
+
+        public async Task<bool> AddHomeworkResult(HomeworkResults result)
+        {
+            bool success;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = $"INSERT INTO [HomeworkResults] ([HomeWorkName],[FinishDate],[StudentId],[Results] VALUES (@HomeWorkName, @FinishDate, @StudentId, @Results)";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@HomeWorkName", SqlDbType.VarChar, 255).Value = result.HomeworkName;
+                    command.Parameters.Add("@FinishDate", SqlDbType.Date).Value = result.FinishDate;
+                    command.Parameters.Add("@StudentId", SqlDbType.Int).Value = result.Id;
+                    command.Parameters.Add("@Results", SqlDbType.Float, 8).Value = result.Result;
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                    success = rowsAffected == 1;
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                success = false;
+            }
+
+            return success;
+        }
     }
 }
