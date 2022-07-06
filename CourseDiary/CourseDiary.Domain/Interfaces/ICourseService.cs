@@ -10,7 +10,6 @@ namespace CourseDiary.Domain.Interfaces
     {
         Task<bool> Add(Course course);
         Task<List<Course>> GetAllCourses();
-        Task<bool> UpdateCourse(Course course);
 
     }
 }

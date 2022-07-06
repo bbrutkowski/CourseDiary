@@ -33,11 +33,6 @@ namespace CourseDiary.Domain
         public async Task<List<Course>> GetAllCourses()
         {
             return await _courseRepository.GetAllCourses();
-        }
-
-        public async Task<bool> UpdateCourse(Course course)
-        {
-            return await _courseRepository.UpdateCourse(course);
-        }
+        }        
     }
 }

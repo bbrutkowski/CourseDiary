@@ -11,7 +11,7 @@ namespace CourseDiary.Domain.Models
         public int Id;
         public string Name;
         public DateTime BeginDate;
-        public int Trainer;
+        public Trainer Trainer;
         public List<Student> Students;
         public double PresenceTreshold = 70.0;
         public double HomeworkTreshold = 70.0;
