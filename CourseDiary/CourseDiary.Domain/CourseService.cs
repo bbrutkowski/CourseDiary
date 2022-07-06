@@ -35,7 +35,7 @@ namespace CourseDiary.Domain
 
         public async Task<List<Course>> GetActiveCoursesAsync(List<Course> courses)
         {
-            courses = _courseRepository.GetAllCoursesAsync().Result;
+            courses = await _courseRepository.GetAllCoursesAsync();
             List<Course> activeCourses = new List<Course>();
 
             activeCourses = courses

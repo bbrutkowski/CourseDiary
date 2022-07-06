@@ -11,5 +11,6 @@ namespace CourseDiary.Domain.Interfaces
     {
         Task AddStudentAsync(Student student);
         Task<List<Student>> GetAllStudentsAsync();
+        Task<Student> GetStudentAsync(string email);
     }
 }

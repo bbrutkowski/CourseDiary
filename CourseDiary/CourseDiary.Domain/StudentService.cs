@@ -15,7 +15,7 @@ namespace CourseDiary.Domain
 
     public class StudentService : IStudentService
     {
-        private IStudentRepository _studentRepository;
+        private readonly IStudentRepository _studentRepository;
         public StudentService(IStudentRepository studentRepository)
         {
             _studentRepository = studentRepository;
@@ -29,6 +29,13 @@ namespace CourseDiary.Domain
         public async Task<List<Student>> GetAllStudentsAsync()
         {
             return await _studentRepository.GetAllStudentsAsync();
+        }
+
+        public bool CheckStudentCredentials(string email, string Password)
+        {
+            Student student = _studentRepository.GetStudentAsync(email).Result;
+            var success = student != null && student.Password == Password;
+            return success;
         }
     }
 }

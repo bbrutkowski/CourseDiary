@@ -3,6 +3,7 @@ using CourseDiary.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -42,11 +43,11 @@ namespace CourseDiary.Infrastructure
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
 
                     string commandText = @"SELECT * FROM [Students]";
                     SqlCommand command = new SqlCommand(commandText, connection);
-                    SqlDataReader dataReader = command.ExecuteReader();
+                    SqlDataReader dataReader = command.ExecuteReaderAsync().Result;
 
                     while (dataReader.Read())
                     {
@@ -69,5 +70,45 @@ namespace CourseDiary.Infrastructure
             }
             return students;
         }
+
+        public async Task<Student> GetStudentAsync(string email)
+        {
+            Student student = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = $"SELECT * FROM [Trainers] WHERE [Email] = @Email";
+
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@Email", SqlDbType.NVarChar, 255).Value = email;
+
+                    SqlDataReader dataReader = command.ExecuteReaderAsync().Result;
+
+                    await dataReader.ReadAsync();
+
+                    student = new Student
+                    {
+                        Id = int.Parse(dataReader["Id"].ToString()),
+                        Name = dataReader["Name"].ToString(),
+                        Email = dataReader["Email"].ToString(),
+                        Password = dataReader["UserPassword"].ToString()
+                    };
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                student = null;
+            }
+
+            return student;
+        }
+
     }
 }
