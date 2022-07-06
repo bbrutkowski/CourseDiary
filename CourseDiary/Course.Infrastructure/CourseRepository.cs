@@ -27,7 +27,7 @@ namespace CourseDiary.Infrastructure
                     SqlCommand command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
                     command.Parameters.Add("@BeginDate", SqlDbType.DateTime2).Value = course.BeginDate;
-                    command.Parameters.Add("@TrainerId", SqlDbType.Int).Value = course.Trainer.Id;
+                    command.Parameters.Add("@TrainerId", SqlDbType.Int).Value = course.Trainer;
                     command.Parameters.Add("@PresenceTreshold", SqlDbType.Float, 8).Value = course.PresenceTreshold;
                     command.Parameters.Add("@HomeworkTreshold", SqlDbType.Float, 8).Value = course.HomeworkTreshold;
                     command.Parameters.Add("@TestTreshold", SqlDbType.Float, 8).Value = course.TestTreshold;
@@ -48,7 +48,9 @@ namespace CourseDiary.Infrastructure
             return success;
         }
 
+
         public async Task<List<Course>> GetAllCoursesAsync()
+
         {
             List<Course> courses = new List<Course>();
 
@@ -89,6 +91,7 @@ namespace CourseDiary.Infrastructure
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+
                 courses = null;
             }
 

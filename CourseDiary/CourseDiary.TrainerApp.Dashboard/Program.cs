@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourseDiary.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,23 +16,21 @@ namespace CourseDiary.TrainerApp.Dashboard
 
         private readonly LoginHandler _loginHandler;
         private readonly TrainerActionsHandler _trainerActionsHandler;
+        private Trainer _loggedTrainer = null;
         public Program()
         {
             _loginHandler = new LoginHandler();
             _trainerActionsHandler = new TrainerActionsHandler();
+            _loggedTrainer = new Trainer();
         }
 
         private void Run()
         {
-            string loggedUser = _loginHandler.LoginLoop();
+            _loggedTrainer = _loginHandler.LoginLoop();
 
-            if (!string.IsNullOrEmpty(loggedUser))
+            if (_loggedTrainer != null)
             {
-                bool exit;
-                do
-                {
-                    exit = _trainerActionsHandler.ProgramLoop(loggedUser);
-                } while(!exit);
+                _trainerActionsHandler.ProgramLoop(_loggedTrainer);
             }
         }
     }

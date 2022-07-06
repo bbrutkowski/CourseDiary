@@ -50,5 +50,11 @@ namespace CourseDiary.Domain
 
             return activeCourses;
         }
+
+        public async Task<List<Course>> GetAllCourses()
+        {
+            return await _courseRepository.GetAllCoursesAsync();
+        }        
+
     }
 }
