@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{57B6DF31-FF5C-41F3-BD96-6149722293A0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CourseDiary.Infrastructure</RootNamespace>
-    <AssemblyName>CourseDiary.Infrastructure</AssemblyName>
+    <ProjectGuid>{D4A4B069-00CE-4421-BC02-93068BB88C93}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CourseDiary.Trainer</RootNamespace>
+    <AssemblyName>CourseDiary.Trainer</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,28 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CourseRepository.cs" />
-    <Compile Include="TrainerRepository.cs" />
+    <Compile Include="LoginHelper.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StudentRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CourseDiary.Domain\CourseDiary.Domain.csproj">
       <Project>{7303f46d-6b36-4371-81bb-e8afb769c71f}</Project>
       <Name>CourseDiary.Domain</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CourseDiary.Domain\CourseDiary.Domain.csproj">
-      <Project>{7303F46D-6B36-4371-81BB-E8AFB769C71F}</Project>
-      <Name>CourseDiary.Domain</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SQL\AddColumnStateToCourses.sql" />
-    <Content Include="SQL\CreateTableStudents.sql" />
-    <Content Include="SQL\CREATE_COURSES_TABLE.sql" />
-    <Content Include="SQL\Script1.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

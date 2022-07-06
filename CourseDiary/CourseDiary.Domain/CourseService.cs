@@ -2,6 +2,9 @@
 using CourseDiary.Domain.Models;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
 
 namespace CourseDiary.Domain
 {
@@ -26,5 +29,29 @@ namespace CourseDiary.Domain
             }
             return await _courseRepository.Add(course);
         }
+
+        public async Task<List<Course>> GetActiveCoursesAsync(List<Course> courses)
+        {
+            courses = _courseRepository.GetAllCoursesAsync().Result;
+            List<Course> activeCourses = new List<Course>();
+
+            activeCourses = courses
+                .Where(x=>x.State == State.Open)
+                .ToList();
+
+            //todo: to trzeba dorzucić do clienta
+            //foreach(Course course in activeCourses)
+            //{
+            //    Console.WriteLine($"Course name:  {course.Name} \n Trainer:  {course.Trainer.Name} {course.Trainer.Surname} \n Begin date: {course.BeginDate} \n");
+            //}
+
+            return activeCourses;
+        }
+
+        public async Task<List<Course>> GetAllCourses()
+        {
+            return await _courseRepository.GetAllCoursesAsync();
+        }        
+
     }
 }

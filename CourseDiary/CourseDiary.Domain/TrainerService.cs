@@ -43,5 +43,9 @@ namespace CourseDiary.Domain
             return await _trainerRepository.GetTrainer(id);
         }
 
+        public Trainer GetTrainer(string trainerMail)
+        {
+            return _trainerRepository.GetTrainer(trainerMail);
+        }
     }
 }
