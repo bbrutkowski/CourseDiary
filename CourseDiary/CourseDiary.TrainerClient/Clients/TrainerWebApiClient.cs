@@ -39,5 +39,28 @@ namespace CourseDiary.TrainerClient.Clients
                 return false;
             }
         }
+
+        public async Task<Trainer> GetTrainerByEmail(string email)
+        {
+            try
+            {
+                var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/trainer/{email}");
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return new Trainer();
+                }
+
+                return JsonConvert.DeserializeObject<Trainer>(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return new Trainer();
+            }
+        }
     }
 }

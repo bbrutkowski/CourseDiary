@@ -50,7 +50,10 @@
     <Compile Include="Clients\CourseWebApiClient.cs" />
     <Compile Include="Clients\TrainerWebApiClient.cs" />
     <Compile Include="CliHelper.cs" />
+    <Compile Include="CourseManager.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\MenuItem.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Trainer.cs" />
     <Compile Include="Models\TrainerCredentials.cs" />

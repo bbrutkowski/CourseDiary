@@ -1,30 +1,29 @@
-﻿namespace CourseDiary.TrainerClient
+﻿using CourseDiary.TrainerClient.Models;
+
+namespace CourseDiary.TrainerClient
 {
     internal class Program
     {
         private readonly TrainerClientLoginHandler _trainerClientLoginHandler;
         private readonly TrainerClientActionHandler _trainerClientActionHandler;
-        static void Main(string[] args)
-        {
-            new Program().Run();
-        }
+        private Trainer _loggedTrainer = null;
         public Program()
         {
             _trainerClientLoginHandler = new TrainerClientLoginHandler();
             _trainerClientActionHandler = new TrainerClientActionHandler();
+            _loggedTrainer = new Trainer();
         }
-
+        static void Main(string[] args)
+        {
+            new Program().Run();
+        }
         private void Run()
         {
-            string loggedUser = _trainerClientLoginHandler.LoginLoop();
+            _loggedTrainer = _trainerClientLoginHandler.LoginLoop();
 
-            if (!string.IsNullOrEmpty(loggedUser))
+            if (_loggedTrainer != null)
             {
-                bool exit;
-                do
-                {
-                    exit = _trainerClientActionHandler.ProgramLoop(loggedUser);
-                } while (!exit);
+                _trainerClientActionHandler.ProgramLoop(_loggedTrainer);
             }
         }
     }

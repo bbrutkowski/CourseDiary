@@ -1,19 +1,18 @@
-﻿using CourseDiary.Domain;
-using CourseDiary.Domain.Models;
-using CourseDiary.Infrastructure;
+﻿using CourseDiary.TrainerClient.Clients;
+using CourseDiary.TrainerClient.Models;
 using System;
 
-namespace CourseDiary.TrainerApp.Dashboard
+namespace CourseDiary.TrainerClient
 {
     public class CourseManager
     {
-        private CourseService _courseService;
+        private CourseWebApiClient _courseWebApiClient;
         private CliHelper _cliHelper;
         private Trainer _loggedTrainer = null;
 
         public CourseManager()
         {
-            _courseService = new CourseService(new CourseRepository());
+            _courseWebApiClient = new CourseWebApiClient();
             _cliHelper = new CliHelper();
             _loggedTrainer = new Trainer();
         }
@@ -24,7 +23,7 @@ namespace CourseDiary.TrainerApp.Dashboard
         }
         public async void SelectCourse()
         {
-            var allCourses = await _courseService.GetAllCourses();
+            var allCourses = await _courseWebApiClient.GetAllCourses();
             foreach (var course in allCourses)
             {
                 Console.WriteLine($"{course.Name}");
@@ -35,11 +34,6 @@ namespace CourseDiary.TrainerApp.Dashboard
                 Name = selectCourse,
                 Trainer = _loggedTrainer,
             };
-            var isUpdated = await _courseService.UpdateCourse(newCourse);
-            if (isUpdated == true)
-            {
-                Console.WriteLine("Successfully assigning trainer to course");
-            }
         }
     }
 }

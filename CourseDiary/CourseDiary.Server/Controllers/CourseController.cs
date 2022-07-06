@@ -1,6 +1,8 @@
 ﻿using CourseDiary.Domain;
 using CourseDiary.Domain.Models;
 using CourseDiary.Infrastructure;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace CourseDiary.Server.Controllers
@@ -14,6 +16,13 @@ namespace CourseDiary.Server.Controllers
         {
             CourseRepository courseRepository = new CourseRepository();
             _courseService = new CourseService(courseRepository);
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<List<Course>> GetAllCourses()
+        {
+            return await _courseService.GetAllCourses();
         }
 
         [HttpPost]
