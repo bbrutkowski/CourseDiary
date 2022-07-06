@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CourseDiary.AdminClient.Models
 {
@@ -10,6 +11,6 @@ namespace CourseDiary.AdminClient.Models
         public string Email { get; set; }
         [MinLength(6)]
         public string Password { get; set; }
-        public string DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 }

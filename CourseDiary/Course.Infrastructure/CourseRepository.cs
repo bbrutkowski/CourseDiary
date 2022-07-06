@@ -23,7 +23,7 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = $"INSERT INTO [Courses] ([Name],[BeginDate],[TrainerId],[PresenceTreshold],[HomeworkTreshold],[TestTreshold]) VALUES (@Name, @BeginDate, @TrainerId, @PresenceTreshold, @HomeworkTreshold, @TestTreshold)";
+                    string commandText = $"INSERT INTO [Courses] ([Name],[BeginDate],[TrainerId],[PresenceTreshold],[HomeworkTreshold],[TestTreshold],[State]) VALUES (@Name, @BeginDate, @TrainerId, @PresenceTreshold, @HomeworkTreshold, @TestTreshold, @State)";
                     SqlCommand command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
                     command.Parameters.Add("@BeginDate", SqlDbType.DateTime2).Value = course.BeginDate;
@@ -31,6 +31,7 @@ namespace CourseDiary.Infrastructure
                     command.Parameters.Add("@PresenceTreshold", SqlDbType.Float, 8).Value = course.PresenceTreshold;
                     command.Parameters.Add("@HomeworkTreshold", SqlDbType.Float, 8).Value = course.HomeworkTreshold;
                     command.Parameters.Add("@TestTreshold", SqlDbType.Float, 8).Value = course.TestTreshold;
+                    command.Parameters.Add("@State", SqlDbType.VarChar, 255).Value = course.State;
                     int rowsAffected = await command.ExecuteNonQueryAsync();
 
                     success = rowsAffected == 1;
@@ -47,7 +48,9 @@ namespace CourseDiary.Infrastructure
             return success;
         }
 
-        public async Task<List<Course>> GetAllCourses()
+
+        public async Task<List<Course>> GetAllCoursesAsync()
+
         {
             List<Course> courses = new List<Course>();
 
@@ -57,35 +60,42 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = $"SELECT * FROM [Courses]";
+                    string commandText = @"SELECT * FROM [Inspections]";
                     SqlCommand command = new SqlCommand(commandText, connection);
-                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                    SqlDataReader dataReader = command.ExecuteReader();
 
-                    while (await dataReader.ReadAsync())
+                    while (dataReader.Read())
                     {
-                       Course course;
-
-                        try
+                        Course course = new Course();
+                        course.Id = int.Parse(dataReader["Id"].ToString());
+                        course.Name = dataReader["Name"].ToString();
+                        course.BeginDate = DateTime.Parse(dataReader["BeginDate"].ToString());
+                        course.Trainer = new Trainer
                         {
-                            course = new Course
-                            {
-                                Name = dataReader["Name"].ToString(),                              
-                            };
-                            courses.Add(course);
+                            Id = int.Parse(dataReader["Id"].ToString()),
+                            Name = dataReader["Name"].ToString(),
+                            Surname = dataReader["Surname"].ToString(),
+                            Email = dataReader["Email"].ToString(),
+                            Password = dataReader["Password"].ToString(),
+                            DateOfBirth = DateTime.Parse(dataReader["DateOfBirth"].ToString())
+                        };
+                        course.PresenceTreshold = double.Parse(dataReader["TestTreshold"].ToString());
+                        course.HomeworkTreshold = double.Parse(dataReader["TestTreshold"].ToString());
+                        course.TestTreshold = double.Parse(dataReader["TestTreshold"].ToString());
+                        course.State = Enum.TryParse(dataReader["State"].ToString(), out State cos) ? cos : course.State;
 
-                        }
-                        catch (Exception)
-                        {
-                            continue;
-                        }
+                        courses.Add(course);
                     }
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+
+                courses = null;
             }
+
             return courses;
-        }       
+        }
     }
 }

@@ -1,4 +1,3 @@
-﻿
 using CourseDiary.Domain;
 using CourseDiary.Domain.Models;
 using CourseDiary.Infrastructure;
