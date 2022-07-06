@@ -1,9 +1,6 @@
 ﻿using CourseDiary.Domain.Interfaces;
 using CourseDiary.Domain.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourseDiary.Domain
@@ -11,6 +8,8 @@ namespace CourseDiary.Domain
     public interface IStudentService
     {
         Task AddStudentAsync(Student student);
+        Task<List<StudentInCourse>> ShowMyCoursesAsync(string email);
+        Task<bool> CheckStudentCredentialsAsync(string email, string Password);
     }
 
     public class StudentService : IStudentService
@@ -31,11 +30,18 @@ namespace CourseDiary.Domain
             return await _studentRepository.GetAllStudentsAsync();
         }
 
-        public bool CheckStudentCredentials(string email, string Password)
+        public async Task<bool> CheckStudentCredentialsAsync(string email, string Password)
         {
-            Student student = _studentRepository.GetStudentAsync(email).Result;
+            Student student = await _studentRepository.GetStudentAsync(email);
             var success = student != null && student.Password == Password;
             return success;
+        }
+
+        public async Task<List<StudentInCourse>> ShowMyCoursesAsync(string email)
+        {
+            var student = await _studentRepository.GetStudentAsync(email);
+
+            return await _studentRepository.GetMyCoursesAsync(student.Id);
         }
     }
 }

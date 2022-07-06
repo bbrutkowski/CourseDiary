@@ -81,7 +81,7 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = $"SELECT * FROM [Trainers] WHERE [Email] = @Email";
+                    string commandText = $"SELECT * FROM [Students] WHERE [Email] = @Email";
 
                     SqlCommand command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@Email", SqlDbType.NVarChar, 255).Value = email;
@@ -110,5 +110,55 @@ namespace CourseDiary.Infrastructure
             return student;
         }
 
+        public async Task<List<StudentInCourse>> GetMyCoursesAsync(int id)
+        {
+            List<StudentInCourse> courses = new List<StudentInCourse>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = @"
+                        SELECT
+                            [Students].[Id] AS [StudentId],
+                            [Students].[Name],
+                            [Students].[Surname],
+                            [Courses].[Id] AS [CourseId],
+                            [Courses].[Name] AS [CourseName],
+                            [Courses].[State] AS [CourseState],
+                        FROM[Students]
+                        INNER JOIN[CourseStudents] ON [Students].[Id] = [CourseStudents].[StudentId]
+                        INNER JOIN[Courses] ON [Courses].[Id] = [CourseStudents].[CourseId]
+                        WHERE [Students].[Id] = @id; ";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+
+                    while (await dataReader.ReadAsync())
+                    {
+                        StudentInCourse student = new StudentInCourse();
+                        student.StudentId = int.Parse(dataReader["StudentId"].ToString());
+                        student.StudentName = dataReader["Name"].ToString();
+                        student.StudentSurname = dataReader["Surname"].ToString();
+                        student.CourseId = int.Parse(dataReader["CourseId"].ToString());
+                        student.CourseName = dataReader["CourseName"].ToString();
+                        student.CourseState = Enum.TryParse(dataReader["CourseState"].ToString(), out State cos) ? cos : student.CourseState;
+
+                        courses.Add(student);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+
+                courses = null;
+            }
+
+            return courses;
+        }
     }
 }
