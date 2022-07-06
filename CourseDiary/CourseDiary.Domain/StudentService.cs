@@ -10,6 +10,7 @@ namespace CourseDiary.Domain
         Task AddStudentAsync(Student student);
         Task<List<StudentInCourse>> ShowMyCoursesAsync(string email);
         Task<bool> CheckStudentCredentialsAsync(string email, string Password);
+        Task<List<Student>> GetAllStudentsAsync();
     }
 
     public class StudentService : IStudentService

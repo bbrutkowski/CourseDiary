@@ -1,28 +1,27 @@
-﻿using CourseDiary.AdminClient.Models;
+﻿using CourseDiary.TrainerClient.Models;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CourseDiary.AdminClient.Clients
+namespace CourseDiary.TrainerClient.Clients
 {
-    public class StudentWebApiClient
+    public class TrainerWebApiClient
     {
         private readonly HttpClient _client;
 
-        public StudentWebApiClient()
+        public TrainerWebApiClient()
         {
             _client = new HttpClient();
         }
 
-        public async Task<bool> AddStudent(Student student)
+        public async Task<bool> CheckTrainerCredentials(string login, string password)
         {
             try
             {
-                var content = new StringContent(JsonConvert.SerializeObject(student), System.Text.Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonConvert.SerializeObject(new TrainerCredentials { Login = login, Password = password }), System.Text.Encoding.UTF8, "application/json");
 
-                var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/student", content);
+                var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/trainer/credentials", content);
 
                 var result = await responseBody.Content.ReadAsStringAsync();
 
@@ -41,26 +40,26 @@ namespace CourseDiary.AdminClient.Clients
             }
         }
 
-        public async Task<List<Student>> GetAllStudents()
+        public async Task<Trainer> GetTrainerByEmail(string email)
         {
             try
             {
-                var responseBody = await _client.GetAsync(@"http://localhost:9000/api/v1/student");
+                var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/trainer/{email}");
 
                 var result = await responseBody.Content.ReadAsStringAsync();
 
                 if (!responseBody.IsSuccessStatusCode)
                 {
-                    return new List<Student>();
+                    return new Trainer();
                 }
 
-                return JsonConvert.DeserializeObject<List<Student>>(result);
+                return JsonConvert.DeserializeObject<Trainer>(result);
             }
             catch (HttpRequestException e)
             {
                 Console.WriteLine("\nException Caught!");
                 Console.WriteLine("Message :{0} ", e.Message);
-                return new List<Student>();
+                return new Trainer();
             }
         }
     }

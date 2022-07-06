@@ -4,5 +4,5 @@ CREATE TABLE [Students] (
 	[Surname] VARCHAR(255) NOT NULL,
 	[Email] VARCHAR(255) UNIQUE,
 	[Password] VARCHAR(255) CHECK (LEN(Password)>=6),
-	[Date] Date NOT NULL,
+	[Date] DATE NOT NULL,
 )

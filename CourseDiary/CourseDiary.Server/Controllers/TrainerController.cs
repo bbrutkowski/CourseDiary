@@ -1,6 +1,8 @@
 ﻿using CourseDiary.Domain;
 using CourseDiary.Domain.Models;
 using CourseDiary.Infrastructure;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace CourseDiary.Server.Controllers
@@ -22,5 +24,33 @@ namespace CourseDiary.Server.Controllers
         {
             await _trainerService.AddTrainer(trainer);
         }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<List<Trainer>> GetAllTrainers()
+        {
+            return await _trainerService.GetAllTrainers();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<Trainer> GetTrainer(int id)
+        {
+            return await _trainerService.GetTrainer(id);
+        }
+
+        [HttpGet]
+        [Route("{email}")]
+        public async Task<Trainer> GetTrainer(string email)
+        {
+            return await _trainerService.GetTrainer(email);
+        }
+
+        [HttpPost]
+        [Route("credentials")]
+        public async Task<bool> CheckTrainerCredentials([FromBody] string email, [FromBody] string password)
+        {
+            return await _trainerService.CheckTrainerCredentials(email, password);
+        }   
     }
 }
