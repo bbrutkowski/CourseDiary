@@ -50,7 +50,6 @@ namespace CourseDiary.Infrastructure
 
 
         public async Task<List<Course>> GetAllCoursesAsync()
-
         {
             List<Course> courses = new List<Course>();
 
@@ -60,7 +59,7 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = @"SELECT * FROM [Inspections]";
+                    string commandText = @"SELECT * FROM [Courses]";
                     SqlCommand command = new SqlCommand(commandText, connection);
                     SqlDataReader dataReader = command.ExecuteReader();
 

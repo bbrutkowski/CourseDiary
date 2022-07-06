@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseDiary.AdminClient", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseDiary.TrainerClient", "CourseDiary.TrainerClient\CourseDiary.TrainerClient.csproj", "{BED2CF93-A65B-4E8B-9E64-B5AA60514077}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Student", "3.Student", "{4B9F1E5F-E928-415F-BEFC-ECA58E27AFCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseDiary.StudentClient", "CourseDiary.StudentClient\CourseDiary.StudentClient.csproj", "{4D0DE334-BED5-459D-B2EB-15CA1AD95220}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,10 @@ Global
 		{BED2CF93-A65B-4E8B-9E64-B5AA60514077}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BED2CF93-A65B-4E8B-9E64-B5AA60514077}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BED2CF93-A65B-4E8B-9E64-B5AA60514077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D0DE334-BED5-459D-B2EB-15CA1AD95220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D0DE334-BED5-459D-B2EB-15CA1AD95220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D0DE334-BED5-459D-B2EB-15CA1AD95220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D0DE334-BED5-459D-B2EB-15CA1AD95220}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +63,7 @@ Global
 		{1C994B08-0B1D-4FFF-8E34-253A9B46EB27} = {0897EA98-39ED-4F0A-9AB9-CB9F15033C7D}
 		{1AFEB890-070E-4759-8A84-FD6C96C86410} = {0F4C538A-902E-4551-BADA-657FC5978820}
 		{BED2CF93-A65B-4E8B-9E64-B5AA60514077} = {56BA8C3E-3CE0-46BA-854B-E2ABFA9E0E75}
+		{4D0DE334-BED5-459D-B2EB-15CA1AD95220} = {4B9F1E5F-E928-415F-BEFC-ECA58E27AFCD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {319544EE-E064-4ECE-992E-60F562396745}
