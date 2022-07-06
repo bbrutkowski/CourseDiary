@@ -31,6 +31,7 @@ namespace CourseDiary.TrainerApp.Dashboard
             if (_loggedTrainer != null)
             {
                 _trainerActionsHandler.ProgramLoop(_loggedTrainer);
+
             }
         }
     }

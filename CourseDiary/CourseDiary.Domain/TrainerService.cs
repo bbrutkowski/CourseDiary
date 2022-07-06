@@ -28,11 +28,13 @@ namespace CourseDiary.Domain
             Trainer trainer = _trainerRepository.GetTrainer(email);
             var success = trainer != null && trainer.Password == trainerPassword;
             return success;
+
         }
 
         public Trainer GetTrainer(string trainerMail)
         {
             return _trainerRepository.GetTrainer(trainerMail);
+
         }
     }
 }

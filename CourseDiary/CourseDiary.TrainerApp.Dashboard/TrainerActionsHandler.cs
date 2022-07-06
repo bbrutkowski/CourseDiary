@@ -84,6 +84,7 @@ namespace CourseDiary.TrainerApp.Dashboard
             {
                 Console.WriteLine("Successfully assinging trainer to course");
             }
+
         }
     }
 }

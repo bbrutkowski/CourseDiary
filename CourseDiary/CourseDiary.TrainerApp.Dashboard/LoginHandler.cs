@@ -27,6 +27,7 @@ namespace CourseDiary.TrainerApp.Dashboard
             bool exit = false;
             Trainer trainer = null;
 
+
             while (!exit)
             {
                 string operation = _cliHelper.GetStringFromUser("[Login] Choose action [Login, Exit]");
@@ -38,6 +39,7 @@ namespace CourseDiary.TrainerApp.Dashboard
                         {
                             break;
                         }
+
                         break;
                     case "Exit":
                         exit = true;
@@ -47,7 +49,9 @@ namespace CourseDiary.TrainerApp.Dashboard
                 }
             }
 
+
             return trainer;
+
         }
 
         private Trainer LoginUser()
@@ -70,6 +74,7 @@ namespace CourseDiary.TrainerApp.Dashboard
             var newUser = _trainerService.GetTrainer(email);
 
             return newUser;
+
         }
     }
 }
