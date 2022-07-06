@@ -46,7 +46,7 @@ namespace CourseDiary.Infrastructure
 
                     string commandText = @"SELECT * FROM [Students]";
                     SqlCommand command = new SqlCommand(commandText, connection);
-                    SqlDataReader dataReader = command.ExecuteReader();
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
 
                     while (dataReader.Read())
                     {

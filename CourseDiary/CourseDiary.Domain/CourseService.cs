@@ -27,9 +27,6 @@ namespace CourseDiary.Domain
             {
                 throw new Exception("Trainer must be assaigned");
             }
-            DateTime dt = DateTime.ParseExact(course.BeginDate.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            course.BeginDate = dt;
-            course.State = State.Open;
             return await _courseRepository.Add(course);
         }
 

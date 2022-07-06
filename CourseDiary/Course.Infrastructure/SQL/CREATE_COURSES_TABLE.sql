@@ -1,7 +1,7 @@
 CREATE TABLE [Courses](
 	[Id] INT IDENTITY(1,1) PRIMARY KEY,
 	[Name] VARCHAR(255) NOT NULL,
-	[BeginDate] DATETIME2 NOT NULL,
+	[BeginDate] DATE NOT NULL,
 	[TrainerId] INT FOREIGN KEY ([TrainerId]) REFERENCES [Trainers]([Id]),
 	[PresenceTreshold] FLOAT(8) NOT NULL,
 	[HomeworkTreshold] FLOAT(8) NOT NULL,
