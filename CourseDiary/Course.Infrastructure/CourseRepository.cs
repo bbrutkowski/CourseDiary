@@ -70,7 +70,12 @@ namespace CourseDiary.Infrastructure
                         course.BeginDate = DateTime.Parse(dataReader["BeginDate"].ToString());
                         course.Trainer = new Trainer
                         {
-                            //Todo: dodać trainera
+                            Id = int.Parse(dataReader["Id"].ToString()),
+                            Name = dataReader["Name"].ToString(),
+                            Surname = dataReader["Surname"].ToString(),
+                            Email = dataReader["Email"].ToString(),
+                            Password = dataReader["Password"].ToString(),
+                            DateOfBirth = DateTime.Parse(dataReader["DateOfBirth"].ToString())
                         };
                         course.PresenceTreshold = double.Parse(dataReader["TestTreshold"].ToString());
                         course.HomeworkTreshold = double.Parse(dataReader["TestTreshold"].ToString());

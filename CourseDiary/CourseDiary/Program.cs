@@ -45,7 +45,7 @@ namespace CourseDiary
                 Surname = Console.ReadLine(),
                 Password = Console.ReadLine(),
                 Email = Console.ReadLine(),
-                DateOfBirth = Console.ReadLine(),
+                DateOfBirth = DateTime.Parse(Console.ReadLine()),
             };
 
             var isAdded = await _trainerService.AddTrainer(newTrainer);
