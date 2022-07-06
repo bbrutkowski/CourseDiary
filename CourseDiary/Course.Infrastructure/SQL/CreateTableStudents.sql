@@ -2,7 +2,7 @@ CREATE TABLE [Students] (
 	[Id] INT IDENTITY(1,1) PRIMARY KEY,
 	[Name] VARCHAR(255) NOT NULL,
 	[Surname] VARCHAR(255) NOT NULL,
-	[Email] VARCHAR(255) NOT NULL,
-	[Password] VARCHAR(255) NOT NULL,
+	[Email] VARCHAR(255) UNIQUE,
+	[Password] VARCHAR(255) CHECK (LEN(Password)>=6),
 	[Date] Date NOT NULL,
 )

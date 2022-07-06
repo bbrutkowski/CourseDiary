@@ -1,4 +1,6 @@
 ﻿using CourseDiary.Domain;
+using CourseDiary.Domain.Models;
+using CourseDiary.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +16,16 @@ namespace CourseDiary.TrainerApp.Dashboard
 
         public LoginHandler()
         {
+            var trainerRepository = new TrainerRepository();
+
             _cliHelper = new CliHelper();
+            _trainerService = new TrainerService(trainerRepository);
         }
 
-        public string LoginLoop()
+        public Trainer LoginLoop()
         {
             bool exit = false;
-            string loggedUser = null;
+            Trainer trainer = null;
 
             while (!exit)
             {
@@ -28,8 +33,11 @@ namespace CourseDiary.TrainerApp.Dashboard
                 switch (operation)
                 {
                     case "Login":
-                        loggedUser = LoginUser();
-                        exit = !string.IsNullOrEmpty(loggedUser);
+                        trainer = LoginUser();
+                        if (trainer != null)
+                        {
+                            break;
+                        }
                         break;
                     case "Exit":
                         exit = true;
@@ -39,19 +47,19 @@ namespace CourseDiary.TrainerApp.Dashboard
                 }
             }
 
-            return loggedUser;
+            return trainer;
         }
 
-        private string LoginUser()
+        private Trainer LoginUser()
         {
-            string username = _cliHelper.GetStringFromUser("Add username");
+            string email = _cliHelper.GetStringFromUser("Add email");
             string password = _cliHelper.GetStringFromUser("Add pasword");
 
-            bool correctCredentials = _trainerService.CheckUserCredentials(username, password);
+            bool correctCredentials = _trainerService.CheckTrainerCredentials(email, password);
 
             if (correctCredentials)
-            {
-                Console.WriteLine($"Logon successful. Hello {username}");
+            {                 
+                Console.WriteLine($"Logon successful. Hello {email}");
             }
             else
             {
@@ -59,7 +67,9 @@ namespace CourseDiary.TrainerApp.Dashboard
                 return null;
             }
 
-            return username;
+            var newUser = _trainerService.GetTrainer(email);
+
+            return newUser;
         }
     }
 }

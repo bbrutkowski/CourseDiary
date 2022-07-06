@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace CourseDiary.Domain.Models
+namespace CourseDiary.TrainerClient.Models
 {
     public class Trainer
     {

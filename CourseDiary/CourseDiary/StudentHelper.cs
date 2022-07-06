@@ -1,6 +1,7 @@
-﻿using Course.Infrastructure;
+﻿
 using CourseDiary.Domain;
 using CourseDiary.Domain.Models;
+using CourseDiary.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
