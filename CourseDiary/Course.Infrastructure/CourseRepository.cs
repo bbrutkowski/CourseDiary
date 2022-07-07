@@ -128,5 +128,37 @@ namespace CourseDiary.Infrastructure
 
             return success;
         }
+
+        public async Task<bool> AddPresence(StudentPresence presence)
+        {
+            bool success;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = "INSERT INTO [StudentPresence] ([LessonDate],[CourseId],[StudentId],[Presence]) VALUES (@LessonDate, @CourseId, @StudentId, @Presence)";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@LessonDate", SqlDbType.Date).Value = presence.LessonDate;
+                    command.Parameters.Add("@CourseId", SqlDbType.Int).Value = presence.Course.Id;
+                    command.Parameters.Add("@StudentId", SqlDbType.Int).Value = presence.Student.Id;
+                    command.Parameters.Add("@Presence", SqlDbType.NVarChar, 255).Value = presence.Presence;
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                    success = rowsAffected == 1;
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                success = false;
+            }
+
+            return success;
+        }
     }
 }
