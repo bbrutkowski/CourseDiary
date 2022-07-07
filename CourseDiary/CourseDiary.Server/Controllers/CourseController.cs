@@ -45,7 +45,7 @@ namespace CourseDiary.Server.Controllers
         {
             return await _courseService.AddPresence(presence);
         }
-
+        
         [HttpGet]
         [Route("active")]
         public async Task<List<Course>> GetAllActiveCourses()

@@ -80,6 +80,7 @@
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\TrainerController.cs" />
+    <Compile Include="Models\TrainerCredentials.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartUp.cs" />
