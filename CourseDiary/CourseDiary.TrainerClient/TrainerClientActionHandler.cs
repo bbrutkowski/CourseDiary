@@ -11,6 +11,13 @@ namespace CourseDiary.TrainerClient
         private readonly TrainerClientLoginHandler _trainerClientLoginHandler;
         private readonly CourseWebApiClient _courseWebApiClient;
         private string _loggedUser = null;
+
+        public TrainerClientActionHandler()
+        {
+            _cliHelper = new CliHelper();
+            _trainerClientLoginHandler = new TrainerClientLoginHandler();
+            _courseWebApiClient = new CourseWebApiClient();
+        }
         public bool ProgramLoop(string loggedUser)
         {
             _loggedUser = loggedUser;
