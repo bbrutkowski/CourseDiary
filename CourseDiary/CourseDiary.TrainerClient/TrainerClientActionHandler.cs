@@ -124,88 +124,116 @@ namespace CourseDiary.TrainerClient
 
         private async void ClosingCourse()
         {
-            var activeCourses = await _courseWebApiClient.GetAllActiveCourses();
-            foreach (var course in activeCourses)
+            if (_selectedCourse.State.ToString().ToLower() == "close")
             {
-                Console.WriteLine($"{course.Name}");
+                Console.WriteLine("You cannot closing same course twice");
             }
-            var selectCourse = _cliHelper.GetStringFromUser("Enter name of course you want to close");
-            Course updateCourse = new Course()
+            else
             {
-                Name = selectCourse,
-                State = State.Closed,
-            };
-             await _courseWebApiClient.CloseTheCourse(updateCourse);             
+                var activeCourses = await _courseWebApiClient.GetAllActiveCourses();
+                foreach (var course in activeCourses)
+                {
+                    Console.WriteLine($"{course.Name}");
+                }
+                var selectCourse = _cliHelper.GetStringFromUser("Enter name of course you want to close");
+                Course updateCourse = new Course()
+                {
+                    Name = selectCourse,
+                    State = State.Closed,
+                };
+                await _courseWebApiClient.CloseTheCourse(updateCourse);
+
+            }                    
         }
 
         private async void AddTestResultsAsync()
         {
-            TestResults newTestResult = new TestResults()
+            if (_selectedCourse.State.ToString().ToLower() == "close")
             {
-                TestName = _cliHelper.GetStringFromUser("Enter test name"),
-                FinishDate = _cliHelper.GetDateFromUser("Enter end date of test"),
-                StudentId = _cliHelper.GetIntFromUser("Enter student id"),
-                Result = _cliHelper.GetIntFromUser("Enter result of test (0-100)"),
-            };
-            if (newTestResult.Result > 100)
-            {
-                Console.WriteLine("Value cannot be higher than 100");
+                Console.WriteLine("You can't do that. This course is closed");
             }
             else
             {
-                await _courseWebApiClient.AddTestResult(newTestResult);
-            }
+                TestResults newTestResult = new TestResults()
+                {
+                    TestName = _cliHelper.GetStringFromUser("Enter test name"),
+                    FinishDate = _cliHelper.GetDateFromUser("Enter end date of test"),
+                    StudentId = _cliHelper.GetIntFromUser("Enter student id"),
+                    Result = _cliHelper.GetIntFromUser("Enter result of test (0-100)"),
+                };
+                if (newTestResult.Result > 100)
+                {
+                    Console.WriteLine("Value cannot be higher than 100");
+                }
+                else
+                {
+                    await _courseWebApiClient.AddTestResult(newTestResult);
+                }
+            }           
         }
 
         private async void AddHomeworkResults()
         {
-            HomeworkResults newResults = new HomeworkResults()
+            if (_selectedCourse.State.ToString().ToLower() == "close")
             {
-                HomeworkName = _cliHelper.GetStringFromUser("Enter homework name"),
-                FinishDate = _cliHelper.GetDateFromUser("Enter homework deadline"),
-                StudentId = _cliHelper.GetIntFromUser("Enter student Id"),
-                Result = float.Parse(_cliHelper.GetStringFromUser("Enter homework result (0-200)")),
-            };
-            if (newResults.Result > 200)
-            {
-                Console.WriteLine("Value cannot be higher than 200");
+                Console.WriteLine("You cant do that. This course is closed");
             }
             else
             {
-                await _courseWebApiClient.AddHomeworkResult(newResults);
-            }
-
+                HomeworkResults newResults = new HomeworkResults()
+                {
+                    HomeworkName = _cliHelper.GetStringFromUser("Enter homework name"),
+                    FinishDate = _cliHelper.GetDateFromUser("Enter homework deadline"),
+                    StudentId = _cliHelper.GetIntFromUser("Enter student Id"),
+                    Result = float.Parse(_cliHelper.GetStringFromUser("Enter homework result (0-200)")),
+                };
+                if (newResults.Result > 200)
+                {
+                    Console.WriteLine("Value cannot be higher than 200");
+                }
+                else
+                {
+                    await _courseWebApiClient.AddHomeworkResult(newResults);
+                }
+            }          
         }
 
         private async void AddPresence()
         {
-            List<Student> students = await _studentWebApiClient.GetAllStudents();
-            foreach (Student student in students)
+            if (_selectedCourse.State.ToString().ToLower() == "close")
             {
-                Console.WriteLine($"{student.Id}. {student.Name} {student.Surname} - {student.Email}");
-                StudentPresence presence = new StudentPresence();
-                presence.Student = student;
-                presence.Course = _selectedCourse;
-                presence.LessonDate = _cliHelper.GetDateFromUser("Lesson date(dd-mm-yyyy): ");
-                switch (_cliHelper.GetIntFromUser("Choose type of presence: \n1.Present \n2.Absent \n3.Justified"))
-                {
-                    case 1:
-                        presence.Presence = Presence.Present;
-                        break;
-                    case 2:
-                        presence.Presence = Presence.Absent;
-                        break;
-                    case 3:
-                        presence.Presence = Presence.Justified;
-                        break;
-                    default:
-                        Console.WriteLine("Wrong option");
-                        break;
-                }
-                await _courseWebApiClient.AddPresence(presence);
-                Console.Clear();
+                Console.WriteLine("This course is closed. You cant do that");
             }
-            MenuForActiveCourse();
+            else
+            {
+                List<Student> students = await _studentWebApiClient.GetAllStudents();
+                foreach (Student student in students)
+                {
+                    Console.WriteLine($"{student.Id}. {student.Name} {student.Surname} - {student.Email}");
+                    StudentPresence presence = new StudentPresence();
+                    presence.Student = student;
+                    presence.Course = _selectedCourse;
+                    presence.LessonDate = _cliHelper.GetDateFromUser("Lesson date(dd-mm-yyyy): ");
+                    switch (_cliHelper.GetIntFromUser("Choose type of presence: \n1.Present \n2.Absent \n3.Justified"))
+                    {
+                        case 1:
+                            presence.Presence = Presence.Present;
+                            break;
+                        case 2:
+                            presence.Presence = Presence.Absent;
+                            break;
+                        case 3:
+                            presence.Presence = Presence.Justified;
+                            break;
+                        default:
+                            Console.WriteLine("Wrong option");
+                            break;
+                    }
+                    await _courseWebApiClient.AddPresence(presence);
+                    Console.Clear();
+                }
+                MenuForActiveCourse();
+            }            
         }
 
         private void ShowSelectedCourse()
