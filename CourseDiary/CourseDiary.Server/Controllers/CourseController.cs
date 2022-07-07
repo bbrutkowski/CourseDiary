@@ -40,13 +40,13 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpPost]
-
         [Route("AddTestResult")]
         public async Task<bool> AddtestResult([FromBody] TestResults testResult)
         {
             return await _courseService.AddTestResult(testResult);
         }
-
+        
+        [HttpPost]
         [Route("addpresence")]
         public async Task<bool> AddPresence([FromBody] StudentPresence presence)
         {
