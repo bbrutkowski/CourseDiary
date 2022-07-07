@@ -2,6 +2,7 @@
 using CourseDiary.TrainerClient.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CourseDiary.TrainerClient
 {
@@ -10,17 +11,21 @@ namespace CourseDiary.TrainerClient
         private readonly CliHelper _cliHelper;
         private readonly TrainerClientLoginHandler _trainerClientLoginHandler;
         private readonly CourseWebApiClient _courseWebApiClient;
-        private string _loggedUser = null;
+        private readonly StudentWebApiClient _studentWebApiClient;
+        private Trainer _loggedTrainer = null;
+        private Course _selectedCourse;
 
         public TrainerClientActionHandler()
         {
             _cliHelper = new CliHelper();
             _trainerClientLoginHandler = new TrainerClientLoginHandler();
             _courseWebApiClient = new CourseWebApiClient();
+            _studentWebApiClient = new StudentWebApiClient();
         }
-        public bool ProgramLoop(string loggedUser)
+
+        public bool ProgramLoop(Trainer loggedTrainer)
         {
-            _loggedUser = loggedUser;
+            _loggedTrainer = loggedTrainer;
             bool exit = false;
 
             while (!exit)
@@ -62,16 +67,17 @@ namespace CourseDiary.TrainerClient
 
         private async void SelectActiveCourse()
         {
-            var allCourses = await _courseWebApiClient.GetAllCourses();
-            foreach (var course in allCourses)
+            var allActiveCourses = await _courseWebApiClient.GetAllActiveCourses();
+            foreach (Course course in allActiveCourses)
             {
-                Console.WriteLine($"{course.Name}");
+                Console.WriteLine($"{course.Id}. {course.Name} - {course.Trainer.Name} {course.Trainer.Surname} - {course.BeginDate}");
             }
-            var selectCourse = _cliHelper.GetStringFromUser("Enter name of course you want to assign");
-            MenuForActivCourse(selectCourse);
+            var selectedId = _cliHelper.GetIntFromUser("Enter id of course you want to choose: ");
+            _selectedCourse = allActiveCourses.Where(x => x.Id == selectedId).ToList()[0];
+            MenuForActiveCourse();
         }
 
-        private void MenuForActivCourse(string selectCourse)
+        private void MenuForActiveCourse()
         {
             var switchOption = _cliHelper.GetStringFromUser("What do you want to do?");
             var exit = false;
@@ -80,10 +86,10 @@ namespace CourseDiary.TrainerClient
                 switch (switchOption)
                 {
                     case "1":
-                        ShowAcvivCourse();
+                        ShowSelectedCourse();
                         break;
                     case "2":
-                        AddCoursePresence();
+                        AddPresence();
                         break;
                     case "3":
                         AddHomeworkResults();
@@ -101,7 +107,7 @@ namespace CourseDiary.TrainerClient
                     case "9":
                         break;
                     case "10":
-                        ProgramLoop(_loggedUser);
+                        ProgramLoop(_loggedTrainer);
                         exit = true;
                         break;
                     default:
@@ -132,21 +138,40 @@ namespace CourseDiary.TrainerClient
 
         }
 
-        private void AddCoursePresence()
+        private async void AddPresence()
         {
-            
+            List<Student> students = await _studentWebApiClient.GetAllStudents();
+            foreach (Student student in students)
+            {
+                Console.WriteLine($"{student.Id}. {student.Name} {student.Surname} - {student.Email}");
+                StudentPresence presence = new StudentPresence();
+                presence.Student = student;
+                presence.Course = _selectedCourse;
+                presence.LessonDate = _cliHelper.GetDateFromUser("Lesson date(dd-mm-yyyy): ");
+                switch (_cliHelper.GetIntFromUser("Choose type of presence: \n1.Present \n2.Absent \n3.Justified"))
+                {
+                    case 1:
+                        presence.Presence = Presence.Present;
+                        break;
+                    case 2:
+                        presence.Presence = Presence.Absent;
+                        break;
+                    case 3:
+                        presence.Presence = Presence.Justified;
+                        break;
+                    default:
+                        Console.WriteLine("Wrong option");
+                        break;
+                }
+                await _courseWebApiClient.AddPresence(presence);
+                Console.Clear();
+            }
+            MenuForActiveCourse();
         }
 
-        private async void ShowAcvivCourse()
+        private void ShowSelectedCourse()
         {
-            List<Course> getActiveCourses = new List<Course>();
-            List<Course> allActiveCourses = new List<Course>();
-            allActiveCourses = await _courseWebApiClient.GetAllActiveCourses(allActiveCourses);
-
-            foreach(Course course in allActiveCourses)
-            {
-                Console.WriteLine($"Course name:  {course.Name} \n Trainer:  {course.Trainer.Name} {course.Trainer.Surname} \n Begin date: {course.BeginDate} \n");
-            }
+            Console.WriteLine($"Course name:  {_selectedCourse.Name} \n Trainer:  {_selectedCourse.Trainer.Name} {_selectedCourse.Trainer.Surname} \n Begin date: {_selectedCourse.BeginDate} \n");
         }
     }
 }
