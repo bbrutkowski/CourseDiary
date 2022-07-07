@@ -6,7 +6,8 @@ namespace CourseDiary.TrainerClient
     {
         private readonly TrainerClientLoginHandler _trainerClientLoginHandler;
         private readonly TrainerClientActionHandler _trainerClientActionHandler;
-        private Trainer _loggedTrainer = null;
+        private Trainer _loggedTrainer;
+        private string _loggedUser = string.Empty;
         public Program()
         {
             _trainerClientLoginHandler = new TrainerClientLoginHandler();

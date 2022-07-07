@@ -28,7 +28,7 @@ namespace CourseDiary.TrainerClient
                         trainer = LoginUser();
                         if (trainer != null)
                         {
-                            break;
+                            exit = true;                          
                         }
                         break;
                     case "Exit":

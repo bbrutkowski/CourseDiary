@@ -33,14 +33,28 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpPost]
-        [Route("AddHomeWworkResult")]
+        [Route("addhomework")]
         public async Task<bool> AddHomeworkResult([FromBody] HomeworkResults result)
         {
             return await _courseService.AddHomeworkResult(result);
         }
 
+        [HttpPost]
+        [Route("AddTestResult")]
+        public async Task<bool> AddtestResult([FromBody] TestResults testResult)
+        {
+            return await _courseService.AddTestResult(testResult);
+        }
+        
+        [HttpPost]
+        [Route("addpresence")]
+        public async Task<bool> AddPresence([FromBody] StudentPresence presence)
+        {
+            return await _courseService.AddPresence(presence);
+        }
+        
         [HttpGet]
-        [Route("")]
+        [Route("active")]
         public async Task<List<Course>> GetAllActiveCourses()
         {
             return await _courseService.GetActiveCoursesAsync();

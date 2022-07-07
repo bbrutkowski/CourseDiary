@@ -19,7 +19,7 @@ namespace CourseDiary.TrainerClient.Clients
         {
             try
             {
-                var content = new StringContent(JsonConvert.SerializeObject(new TrainerCredentials { Login = login, Password = password }), System.Text.Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonConvert.SerializeObject(new TrainerCredentials { Email = login, Password = password }), System.Text.Encoding.UTF8, "application/json");
 
                 var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/trainer/credentials", content);
 

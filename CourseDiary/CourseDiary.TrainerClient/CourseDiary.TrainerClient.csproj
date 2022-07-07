@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clients\CourseWebApiClient.cs" />
+    <Compile Include="Clients\StudentWebApiClient.cs" />
     <Compile Include="Clients\TrainerWebApiClient.cs" />
     <Compile Include="CliHelper.cs" />
     <Compile Include="CourseManager.cs" />
@@ -57,6 +58,8 @@
     <Compile Include="Models\HomeworkResults.cs" />
     <Compile Include="Models\MenuItem.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\TestResults.cs" />
+    <Compile Include="Models\StudentPresence.cs" />
     <Compile Include="Models\Trainer.cs" />
     <Compile Include="Models\TrainerCredentials.cs" />
     <Compile Include="Program.cs" />
