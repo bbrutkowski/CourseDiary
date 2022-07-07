@@ -24,7 +24,7 @@ namespace CourseDiary.TrainerClient
 
             if (_loggedTrainer != null)
             {
-                _trainerClientActionHandler.ProgramLoop(_loggedTrainer.Email);
+                _trainerClientActionHandler.ProgramLoop(_loggedTrainer);
             }
         }
     }

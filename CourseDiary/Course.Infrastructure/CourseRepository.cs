@@ -48,6 +48,32 @@ namespace CourseDiary.Infrastructure
             return success;
         }
 
+        public async Task<bool> ClosingCourse(Course course)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandSql = "UPDATE Courses SET State = @State WHERE Name = @Name";
+                    SqlCommand command = new SqlCommand(commandSql, connection);
+                    command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
+                    command.Parameters.Add("@State", SqlDbType.VarChar, 255).Value = course.State;
+
+                    if (command.ExecuteNonQuery() == 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return false;
+        }
+
 
         public async Task<List<Course>> GetAllCoursesAsync()
         {

@@ -40,8 +40,15 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpPost]
+        [Route("closeCourse")]
+        public async Task<bool> CloseCourse([FromBody]Course course)
+        {
+            return await _courseService.CloseCourse(course);
+        }
+
+        [HttpPost]
         [Route("AddTestResult")]
-        public async Task<bool> AddtestResult([FromBody] TestResults testResult)
+        public async Task<bool> AddTestResult([FromBody] TestResults testResult)
         {
             return await _courseService.AddTestResult(testResult);
         }

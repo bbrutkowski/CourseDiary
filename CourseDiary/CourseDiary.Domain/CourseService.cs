@@ -45,8 +45,13 @@ namespace CourseDiary.Domain
         public async Task<List<Course>> GetAllCourses()
         {
             return await _courseRepository.GetAllCoursesAsync();
-        }  
-        
+        }
+
+        public async Task<bool> CloseCourse(Course course)
+        {
+            return await _courseRepository.ClosingCourse(course);
+        }
+
         public async Task<bool> AddHomeworkResult(HomeworkResults result)
         {
             return await _courseRepository.AddHomeworkResult(result);
