@@ -30,9 +30,9 @@ namespace CourseDiary.Domain
             return await _courseRepository.Add(course);
         }
 
-        public async Task<List<Course>> GetActiveCoursesAsync(List<Course> courses)
+        public async Task<List<Course>> GetActiveCoursesAsync()
         {
-            courses = await _courseRepository.GetAllCoursesAsync();
+            List<Course> courses = await _courseRepository.GetAllCoursesAsync();
             List<Course> activeCourses = new List<Course>();
 
             activeCourses = courses
@@ -52,6 +52,12 @@ namespace CourseDiary.Domain
             return await _courseRepository.AddHomeworkResult(result);
         }
 
+
+        public async Task<bool> AddPresence(StudentPresence presence)
+        {
+            return await _courseRepository.AddPresence(presence);
+        }
+        
         public async Task<bool> AddTestResult(TestResults testResult)
         {
             return await _courseRepository.AddTestResult(testResult);

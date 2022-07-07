@@ -40,7 +40,7 @@ namespace CourseDiary.TrainerClient.Clients
             }
         }
 
-        public async Task<List<Course>> GetAllActiveCourses(List<Course> course)
+        public async Task<List<Course>> GetAllActiveCourses()
         {
             try
             {
@@ -69,7 +69,7 @@ namespace CourseDiary.TrainerClient.Clients
             {
                 var content = new StringContent(JsonConvert.SerializeObject(results), System.Text.Encoding.UTF8, "application/json");
 
-                var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/course/AddHomeWworkResult", content);
+                var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/course/addhomework", content);
 
                 var result = await responseBody.Content.ReadAsStringAsync();
 
@@ -87,7 +87,7 @@ namespace CourseDiary.TrainerClient.Clients
                 return false;
             }
         }
-
+        
         public async Task<bool> AddTestResult(TestResults testResults)
         {
             try
@@ -114,5 +114,29 @@ namespace CourseDiary.TrainerClient.Clients
         }
 
 
+        public async Task<bool> AddPresence(StudentPresence presence)
+        {
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(presence), System.Text.Encoding.UTF8, "application/json");
+
+                var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/course/addpresence", content);
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+
+                return bool.Parse(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return false;
+            }
+        }        
     }
 }
