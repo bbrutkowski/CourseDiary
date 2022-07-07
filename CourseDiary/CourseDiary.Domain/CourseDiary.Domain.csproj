@@ -51,6 +51,7 @@
     <Compile Include="Models\Student.cs" />
     <Compile Include="Interfaces\ITrainerRepository.cs" />
     <Compile Include="Models\StudentInCourse.cs" />
+    <Compile Include="Models\TestResults.cs" />
     <Compile Include="Models\StudentPresence.cs" />
     <Compile Include="TrainerService.cs" />
     <Compile Include="Models\Trainer.cs" />

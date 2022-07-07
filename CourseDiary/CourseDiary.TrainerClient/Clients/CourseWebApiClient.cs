@@ -87,6 +87,32 @@ namespace CourseDiary.TrainerClient.Clients
                 return false;
             }
         }
+        
+        public async Task<bool> AddTestResult(TestResults testResults)
+        {
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(testResults), System.Text.Encoding.UTF8, "application/json");
+
+                var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/course/AddTestResult", content);
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+
+                return bool.Parse(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return false;
+            }
+        }
+
 
         public async Task<bool> AddPresence(StudentPresence presence)
         {
@@ -111,6 +137,6 @@ namespace CourseDiary.TrainerClient.Clients
                 Console.WriteLine("Message :{0} ", e.Message);
                 return false;
             }
-        }
+        }        
     }
 }

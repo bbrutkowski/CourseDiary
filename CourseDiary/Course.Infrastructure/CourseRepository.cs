@@ -129,6 +129,7 @@ namespace CourseDiary.Infrastructure
             return success;
         }
 
+
         public async Task<bool> AddPresence(StudentPresence presence)
         {
             bool success;
@@ -145,6 +146,39 @@ namespace CourseDiary.Infrastructure
                     command.Parameters.Add("@CourseId", SqlDbType.Int).Value = presence.Course.Id;
                     command.Parameters.Add("@StudentId", SqlDbType.Int).Value = presence.Student.Id;
                     command.Parameters.Add("@Presence", SqlDbType.NVarChar, 255).Value = presence.Presence;
+
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                    success = rowsAffected == 1;
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                success = false;
+            }
+
+            return success;
+        }
+        
+        public async Task<bool> AddTestResult(TestResults testResult)
+        {
+            bool success;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = $"INSERT INTO [TestResults] ([TestName],[FinishDate],[StudentId],[Results] VALUES (@TestName, @FinishDate, @StudentId, @Results)";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@TestName", SqlDbType.VarChar, 255).Value = testResult.TestName;
+                    command.Parameters.Add("@FinishDate", SqlDbType.Date).Value = testResult.FinishDate;
+                    command.Parameters.Add("@StudentId", SqlDbType.Int).Value = testResult.Id;
+                    command.Parameters.Add("@Results", SqlDbType.Float, 8).Value = testResult.Result;
                     int rowsAffected = await command.ExecuteNonQueryAsync();
 
                     success = rowsAffected == 1;
