@@ -87,8 +87,9 @@ namespace CourseDiary.TrainerClient
                         break;
                     case "3":
                         AddHomeworkResults();
-                        break;
+                        break;                       
                     case "4":
+                        AddTestResultsAsync();
                         break;
                     case "5":
                         break;
@@ -109,6 +110,25 @@ namespace CourseDiary.TrainerClient
                         break;
                 }
 
+            }
+        }
+
+        private async void AddTestResultsAsync()
+        {
+            TestResults newTestResult = new TestResults()
+            {
+                TestName = _cliHelper.GetStringFromUser("Enter test name"),
+                FinishDate = _cliHelper.GetDateFromUser("Enter end date of test"),
+                StudentId = _cliHelper.GetIntFromUser("Enter student id"),
+                Result = _cliHelper.GetIntFromUser("Enter result of test (0-100)"),
+            };
+            if (newTestResult.Result > 100)
+            {
+                Console.WriteLine("Value cannot be higher than 100");
+            }
+            else
+            {
+                await _courseWebApiClient.AddTestResult(newTestResult);
             }
         }
 

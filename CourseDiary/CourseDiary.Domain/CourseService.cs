@@ -52,5 +52,9 @@ namespace CourseDiary.Domain
             return await _courseRepository.AddHomeworkResult(result);
         }
 
+        public async Task<bool> AddTestResult(TestResults testResult)
+        {
+            return await _courseRepository.AddTestResult(testResult);
+        }
     }
 }
