@@ -40,13 +40,6 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpGet]
-        [Route("")]
-        public async Task<List<Course>> GetAllCourses()
-        {
-            return await _courseService.GetAllCourses();
-        }
-
-        [HttpGet]
         [Route("active")]
         public async Task<List<Course>> GetAllActiveCourses(List<Course> list)
         {
