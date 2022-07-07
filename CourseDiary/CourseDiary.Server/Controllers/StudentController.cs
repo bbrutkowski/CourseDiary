@@ -31,5 +31,19 @@ namespace CourseDiary.Server.Controllers
         {
             return await _studentService.GetAllStudentsAsync();
         }
+
+        [HttpPost]
+        [Route("credentials")]
+        public async Task<bool> CheckStudentCredentials([FromBody] StudentCredentials studentCredentials)
+        {
+            return await _studentService.CheckStudentCredentialsAsync(studentCredentials.Login, studentCredentials.Password);
+        }
+
+        [HttpGet]
+        [Route("myCourses")]
+        public async Task<List<StudentInCourse>> ShowMyCoursesAsync([FromBody] string email)
+        {
+            return await _studentService.ShowMyCoursesAsync(email);
+        }
     }
 }

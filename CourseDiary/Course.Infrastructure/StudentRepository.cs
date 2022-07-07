@@ -96,7 +96,7 @@ namespace CourseDiary.Infrastructure
                         Id = int.Parse(dataReader["Id"].ToString()),
                         Name = dataReader["Name"].ToString(),
                         Email = dataReader["Email"].ToString(),
-                        Password = dataReader["UserPassword"].ToString()
+                        Password = dataReader["Password"].ToString()
                     };
 
                     connection.Close();

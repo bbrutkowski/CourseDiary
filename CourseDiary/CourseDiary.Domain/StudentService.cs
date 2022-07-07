@@ -9,7 +9,7 @@ namespace CourseDiary.Domain
     {
         Task AddStudentAsync(Student student);
         Task<List<StudentInCourse>> ShowMyCoursesAsync(string email);
-        Task<bool> CheckStudentCredentialsAsync(string email, string Password);
+        Task<bool> CheckStudentCredentialsAsync(string email, string password);
         Task<List<Student>> GetAllStudentsAsync();
     }
 
@@ -31,10 +31,10 @@ namespace CourseDiary.Domain
             return await _studentRepository.GetAllStudentsAsync();
         }
 
-        public async Task<bool> CheckStudentCredentialsAsync(string email, string Password)
+        public async Task<bool> CheckStudentCredentialsAsync(string email, string password)
         {
             Student student = await _studentRepository.GetStudentAsync(email);
-            var success = student != null && student.Password == Password;
+            var success = student != null && student.Password == password;
             return success;
         }
 

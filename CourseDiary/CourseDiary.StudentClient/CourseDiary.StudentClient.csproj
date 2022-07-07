@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -44,16 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clients\StudentWebApiClient.cs" />
+    <Compile Include="Clients\StudentViewWebApiClient.cs" />
+    <Compile Include="CliHelper.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\StudentCredentials.cs" />
     <Compile Include="Models\StudentInCourse.cs" />
     <Compile Include="Models\Trainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StudentClientActionHandler.cs" />
+    <Compile Include="StudentClientLoginHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CourseDiary.Domain\CourseDiary.Domain.csproj">
