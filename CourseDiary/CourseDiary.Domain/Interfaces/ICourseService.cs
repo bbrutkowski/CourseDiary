@@ -13,5 +13,6 @@ namespace CourseDiary.Domain.Interfaces
         Task<bool> AddHomeworkResult(HomeworkResults result);
         Task<bool> AddTestResult(TestResults testResult);
         Task<bool> AddPresence(StudentPresence presence);
+        Task<bool> CloseCourse(Course course);
     }
 }

@@ -14,6 +14,7 @@ namespace CourseDiary.TrainerClient
         private readonly StudentWebApiClient _studentWebApiClient;
         private Trainer _loggedTrainer = null;
         private Course _selectedCourse;
+        private int _courseId;
 
         public TrainerClientActionHandler()
         {
@@ -74,6 +75,7 @@ namespace CourseDiary.TrainerClient
             }
             var selectedId = _cliHelper.GetIntFromUser("Enter id of course you want to choose: ");
             _selectedCourse = allActiveCourses.Where(x => x.Id == selectedId).ToList()[0];
+            _courseId = selectedId;
             MenuForActiveCourse();
         }
 
@@ -102,6 +104,7 @@ namespace CourseDiary.TrainerClient
                     case "6":
                         break;
                     case "7":
+                        ClosingCourse();
                         break;
                     case "8":
                         break;
@@ -117,6 +120,22 @@ namespace CourseDiary.TrainerClient
                 }
 
             }
+        }
+
+        private async void ClosingCourse()
+        {
+            var activeCourses = await _courseWebApiClient.GetAllActiveCourses();
+            foreach (var course in activeCourses)
+            {
+                Console.WriteLine($"{course.Name}");
+            }
+            var selectCourse = _cliHelper.GetStringFromUser("Enter name of course you want to close");
+            Course updateCourse = new Course()
+            {
+                Name = selectCourse,
+                State = State.Closed,
+            };
+             await _courseWebApiClient.CloseTheCourse(updateCourse);             
         }
 
         private async void AddTestResultsAsync()
