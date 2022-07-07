@@ -52,7 +52,8 @@ namespace CourseDiary.Server.Controllers
         {
             return await _courseService.AddTestResult(testResult);
         }
-
+        
+        [HttpPost]
         [Route("addpresence")]
         public async Task<bool> AddPresence([FromBody] StudentPresence presence)
         {
