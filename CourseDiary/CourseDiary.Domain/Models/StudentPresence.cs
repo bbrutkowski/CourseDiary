@@ -12,8 +12,8 @@ namespace CourseDiary.Domain.Models
     public class StudentPresence
     {
         public DateTime LessonDate;
-        public Student Student;
-        public Course Course;
+        public int StudentId;
+        public int CourseId;
         public Presence Presence;
     }
 }

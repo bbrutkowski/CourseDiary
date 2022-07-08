@@ -33,21 +33,21 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpPost]
-        [Route("addhomework")]
+        [Route("homework")]
         public async Task<bool> AddHomeworkResult([FromBody] HomeworkResults result)
         {
             return await _courseService.AddHomeworkResult(result);
         }
 
         [HttpPost]
-        [Route("AddTestResult")]
-        public async Task<bool> AddtestResult([FromBody] TestResults testResult)
+        [Route("test")]
+        public async Task<bool> AddTestResult([FromBody] TestResults testResult)
         {
             return await _courseService.AddTestResult(testResult);
         }
         
         [HttpPost]
-        [Route("addpresence")]
+        [Route("presence")]
         public async Task<bool> AddPresence([FromBody] StudentPresence presence)
         {
             return await _courseService.AddPresence(presence);
@@ -58,6 +58,27 @@ namespace CourseDiary.Server.Controllers
         public async Task<List<Course>> GetAllActiveCourses()
         {
             return await _courseService.GetActiveCoursesAsync();
+        }
+
+        [HttpGet]
+        [Route("{id}/presence")]
+        public async Task<List<StudentPresence>> GetCourseStudentPresence([FromUri] int id)
+        {
+            return await _courseService.GetCourseStudentPresence(id);
+        }
+
+        [HttpGet]
+        [Route("{id}/homework")]
+        public async Task<List<HomeworkResults>> GetCourseHomeworkResults([FromUri] int id)
+        {
+            return await _courseService.GetCourseHomeworkResults(id);
+        }
+
+        [HttpGet]
+        [Route("{id}test")]
+        public async Task<List<TestResults>> GetCourseTestResults([FromUri] int id)
+        {
+            return await _courseService.GetCourseTestResults(id);
         }
     }
 }

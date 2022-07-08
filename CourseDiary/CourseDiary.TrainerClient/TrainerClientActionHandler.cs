@@ -63,7 +63,7 @@ namespace CourseDiary.TrainerClient
                 }
             }
             return exit;
-        }       
+        }
 
         private async void SelectActiveCourse()
         {
@@ -93,7 +93,7 @@ namespace CourseDiary.TrainerClient
                         break;
                     case "3":
                         AddHomeworkResults();
-                        break;                       
+                        break;
                     case "4":
                         AddTestResultsAsync();
                         break;
@@ -126,6 +126,7 @@ namespace CourseDiary.TrainerClient
                 TestName = _cliHelper.GetStringFromUser("Enter test name"),
                 FinishDate = _cliHelper.GetDateFromUser("Enter end date of test"),
                 StudentId = _cliHelper.GetIntFromUser("Enter student id"),
+                CourseId = _selectedCourse.Id,
                 Result = _cliHelper.GetIntFromUser("Enter result of test (0-100)"),
             };
             if (newTestResult.Result > 100)
@@ -145,6 +146,7 @@ namespace CourseDiary.TrainerClient
                 HomeworkName = _cliHelper.GetStringFromUser("Enter homework name"),
                 FinishDate = _cliHelper.GetDateFromUser("Enter homework deadline"),
                 StudentId = _cliHelper.GetIntFromUser("Enter student Id"),
+                CourseId = _selectedCourse.Id,
                 Result = float.Parse(_cliHelper.GetStringFromUser("Enter homework result (0-200)")),
             };
             if (newResults.Result > 200)
@@ -165,8 +167,8 @@ namespace CourseDiary.TrainerClient
             {
                 Console.WriteLine($"{student.Id}. {student.Name} {student.Surname} - {student.Email}");
                 StudentPresence presence = new StudentPresence();
-                presence.Student = student;
-                presence.Course = _selectedCourse;
+                presence.StudentId = student.Id;
+                presence.CourseId = _selectedCourse.Id;
                 presence.LessonDate = _cliHelper.GetDateFromUser("Lesson date(dd-mm-yyyy): ");
                 switch (_cliHelper.GetIntFromUser("Choose type of presence: \n1.Present \n2.Absent \n3.Justified"))
                 {
@@ -192,6 +194,23 @@ namespace CourseDiary.TrainerClient
         private void ShowSelectedCourse()
         {
             Console.WriteLine($"Course name:  {_selectedCourse.Name} \n Trainer:  {_selectedCourse.Trainer.Name} {_selectedCourse.Trainer.Surname} \n Begin date: {_selectedCourse.BeginDate} \n");
+        }
+
+        private async void GenerateCourseResults()
+        {
+            List<StudentPresence> studentPresences = await _courseWebApiClient.GetCourseStudentPresence(_selectedCourse.Id);
+            List<HomeworkResults> homeworkResults = await _courseWebApiClient.GetCourseHomeworkResults(_selectedCourse.Id);
+            List<TestResults> testResults = await _courseWebApiClient.GetCourseTestResults(_selectedCourse.Id);
+
+            var studentJustifiedPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => g.Where(x => x.Equals(Presence.Justified)).ToList());
+            
+            var studentPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => g.Where(x => x.Equals(Presence.Present) || x.Equals(Presence.Justified)).ToList().Count()/g.ToList().Count());
+            
+            var studentHomework = homeworkResults.GroupBy(x => x.StudentId, x => x.Result).ToDictionary(g => g.Key, g => g.ToList().Sum() / (g.ToList().Count() * 200));
+            
+            var studentTest = testResults.GroupBy(x => x.StudentId, x => x.Result).ToDictionary(g => g.Key, g => g.ToList().Sum()/(g.ToList().Count()*100));
+
+
         }
     }
 }
