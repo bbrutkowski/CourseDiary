@@ -12,7 +12,6 @@ namespace CourseDiary.StudentClient
     {
         private readonly CliHelper _cliHelper;
         private readonly StudentViewWebApiClient _studentViewWebApiClient;
-        private readonly StudentClientActionHandler _studentClientActionHandler;
 
         public StudentClientLoginHandler()
         {
@@ -33,14 +32,14 @@ namespace CourseDiary.StudentClient
                         student = LoginUser();
                         if (student != null)
                         {
-                            _studentClientActionHandler.ProgramLoop(student);
-                            break;
+                            exit = true;
                         }
                         break;
                     case "Exit":
                         exit = true;
                         break;
                     default:
+                        Console.WriteLine("I don't know this commend, try again");
                         break;
                 }
             }
