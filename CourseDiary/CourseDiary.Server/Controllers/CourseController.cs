@@ -66,5 +66,13 @@ namespace CourseDiary.Server.Controllers
         {
             return await _courseService.GetActiveCoursesAsync();
         }
+
+        [HttpGet]
+        [Route("courseResults/{id}")]
+        public async Task<List<CourseResult>> GetCourseResults(int id)
+        {
+            return await _courseService.GetCourseResults(id);
+        }
+
     }
 }

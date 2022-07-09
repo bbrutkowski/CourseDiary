@@ -10,10 +10,11 @@ namespace CourseDiary.Domain.Interfaces
     public interface ICourseRepository
     {
         Task<bool> Add(Course course);
-        Task<List<Course>> GetAllCoursesAsync();
         Task<bool> AddHomeworkResult(HomeworkResults result);
-        Task<bool> AddTestResult(TestResults testResult);
         Task<bool> AddPresence(StudentPresence presence);
+        Task<bool> AddTestResult(TestResults testResult);
         Task<bool> ClosingCourse(Course course);
+        Task<List<CourseResult>> GetAllCourseResults(int id);
+        Task<List<Course>> GetAllCoursesAsync();
     }
 }
