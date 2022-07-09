@@ -44,5 +44,10 @@ namespace CourseDiary.Domain
 
             return await _studentRepository.GetMyCoursesAsync(student.Id);
         }
+
+        public async Task<bool> AddCourseRateAsync(CourseRate newRate)
+        {
+            return await _studentRepository.AddCourseRateAsync(newRate);
+        }
     }
 }

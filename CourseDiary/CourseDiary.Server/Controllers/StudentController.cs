@@ -40,10 +40,17 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpGet]
-        [Route("myCourses")]
-        public async Task<List<StudentInCourse>> ShowMyCoursesAsync([FromBody] string email)
+        [Route("myCourses/{email}")]
+        public async Task<List<StudentInCourse>> ShowMyCoursesAsync(string email)
         {
             return await _studentService.ShowMyCoursesAsync(email);
+        }
+
+        [HttpPost]
+        [Route("addCourseRate/")]
+        public async Task<bool> AddCourseRateAsync([FromBody] CourseRate newRate)
+        {
+            return await _studentService.AddCourseRateAsync(newRate);
         }
     }
 }

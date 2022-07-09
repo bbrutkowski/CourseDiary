@@ -11,7 +11,6 @@ namespace CourseDiary.StudentClient
     {
         private readonly StudentClientLoginHandler _studentClientLoginHandler;
         private readonly StudentClientActionHandler _studentClientActionHandler;
-        private string _loggedStudent = null;
         public Program()
         {
             _studentClientLoginHandler = new StudentClientLoginHandler();
@@ -21,13 +20,13 @@ namespace CourseDiary.StudentClient
         {
             new Program().Run();
         }
-        private void Run()
+        public void Run()
         {
-            _loggedStudent = _studentClientLoginHandler.LoginLoop();
+            string loggedStudent = _studentClientLoginHandler.LoginLoop();
 
-            if (_loggedStudent != null)
+            if (!string.IsNullOrEmpty(loggedStudent))
             {
-                _studentClientActionHandler.ProgramLoop(_loggedStudent);
+                _studentClientActionHandler.ProgramLoop(loggedStudent);
             }
         }
     }

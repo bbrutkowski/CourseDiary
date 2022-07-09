@@ -21,7 +21,7 @@ namespace CourseDiary.StudentClient.Clients
         {
             try
             {
-                var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/student/myCourses");
+                var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/student/myCourses/{email}");
 
                 var result = await responseBody.Content.ReadAsStringAsync();
 
@@ -47,6 +47,31 @@ namespace CourseDiary.StudentClient.Clients
                 var content = new StringContent(JsonConvert.SerializeObject(new StudentCredentials { Login = email, Password = password }), Encoding.UTF8, "application/json");
 
                 var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/student/credentials", content);
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+
+                return bool.Parse(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> AddCourseRateAsync(CourseRate newRate)
+        {
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(newRate), Encoding.UTF8, "application/json");
+
+                var responseBody = _client.PostAsync(@"http://localhost:9000/api/v1/student/addCourseRate/", content).Result;
 
                 var result = await responseBody.Content.ReadAsStringAsync();
 
