@@ -12,8 +12,10 @@ namespace CourseDiary.Domain.Interfaces
         Task<bool> Add(Course course);
         Task<List<Course>> GetAllCoursesAsync();
         Task<bool> AddHomeworkResult(HomeworkResults result);
-        Task<bool> AddTestResult(TestResults testResult);
         Task<bool> AddPresence(StudentPresence presence);
+        Task<bool> AddTestResult(TestResults testResult);
+        Task<bool> ClosingCourse(Course course);
+        Task<List<CourseResult>> GetAllCourseResults(int id);
         Task<List<StudentPresence>> GetCourseStudentPresence(int courseId);
         Task<List<HomeworkResults>> GetCourseHomeworkResults(int courseId);
         Task<List<TestResults>> GetCourseTestResults(int courseId);

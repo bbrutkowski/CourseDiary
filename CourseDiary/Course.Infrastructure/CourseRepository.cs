@@ -8,7 +8,8 @@ using System;
 using System.Collections.Generic;
 
 namespace CourseDiary.Infrastructure
-{
+{   
+
     public class CourseRepository : ICourseRepository
     {
         private string _connectionString = ConfigurationManager.ConnectionStrings["CourseDiaryDBConnectionString"].ConnectionString;
@@ -67,6 +68,32 @@ namespace CourseDiary.Infrastructure
             }
 
             return success;
+        }
+
+        public async Task<bool> ClosingCourse(Course course)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandSql = "UPDATE Courses SET State = @State WHERE Name = @Name";
+                    SqlCommand command = new SqlCommand(commandSql, connection);
+                    command.Parameters.Add("@Name", SqlDbType.VarChar, 255).Value = course.Name;
+                    command.Parameters.Add("@State", SqlDbType.VarChar, 255).Value = course.State;
+
+                    if (command.ExecuteNonQuery() == 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return false;
         }
 
 
@@ -204,7 +231,7 @@ namespace CourseDiary.Infrastructure
 
             return success;
         }
-        
+
         public async Task<bool> AddTestResult(TestResults testResult)
         {
             bool success;
@@ -236,6 +263,59 @@ namespace CourseDiary.Infrastructure
             }
 
             return success;
+        }
+
+        public async Task<List<CourseResult>> GetAllCourseResults(int id)
+        {
+            List<CourseResult> courseResults = new List<CourseResult>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = @"SELECT
+	                                     [CourseStudents].[Id] AS [ID],
+	                                     [CourseStudents].[CourseId],
+	                                     [HomeworkResults].[StudentId],
+	                                     [HomeworkResults].[HomeWorkName],	
+	                                     [HomeworkResults].[Results],
+	                                     [TestResults].[TestName],
+	                                     [TestResults].[Results],
+	                                     [Students].[Email]
+	                                     FROM[CourseStudents], [HomeworkResults], [TestResults], [Students]
+	                                     WHERE CourseId = '@CourseId'";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    SqlDataReader dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        CourseResult result = new CourseResult();
+                        result.HomeworkResults = new HomeworkResults()
+                        {
+                            StudentId = int.Parse(dataReader["StudentId"].ToString()),
+                            Result = float.Parse(dataReader["Result"].ToString()),
+                        };
+                        result.TestResults = new TestResults()
+                        {
+                            StudentId = int.Parse(dataReader["StudentId"].ToString()),
+                            Result = float.Parse(dataReader["Result"].ToString()),
+                        };
+                        //result.StudentPresence.Student.Email = dataReader["Email"].ToString();                      
+
+                        courseResults.Add(result);
+                    }                
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+
+                courseResults = null;
+            }
+
+            return courseResults;
         }
 
         public async Task<List<StudentPresence>> GetCourseStudentPresence(int courseId)

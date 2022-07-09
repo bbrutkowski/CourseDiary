@@ -3,6 +3,7 @@ using CourseDiary.TrainerClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 
 namespace CourseDiary.TrainerClient
 {
@@ -30,7 +31,7 @@ namespace CourseDiary.TrainerClient
 
             while (!exit)
             {
-                string operation = _cliHelper.GetStringFromUser("");
+                string operation = _cliHelper.GetStringFromUser("Press 1 to select active course");
 
                 switch (operation)
                 {
@@ -104,6 +105,7 @@ namespace CourseDiary.TrainerClient
                         ShowCourseResults();
                         break;
                     case "7":
+                        ClosingCourse();
                         break;
                     case "8":
                         break;
@@ -121,45 +123,86 @@ namespace CourseDiary.TrainerClient
             }
         }
 
-        private async void AddTestResultsAsync()
+        private async void ClosingCourse()
         {
-            TestResults newTestResult = new TestResults()
+            if (_selectedCourse.State.ToString().ToLower() == "close")
             {
-                TestName = _cliHelper.GetStringFromUser("Enter test name"),
-                FinishDate = _cliHelper.GetDateFromUser("Enter end date of test"),
-                StudentId = _cliHelper.GetIntFromUser("Enter student id"),
-                CourseId = _selectedCourse.Id,
-                Result = _cliHelper.GetIntFromUser("Enter result of test (0-100)"),
-            };
-            if (newTestResult.Result > 100)
-            {
-                Console.WriteLine("Value cannot be higher than 100");
+                Console.WriteLine("You cannot closing same course twice");
             }
             else
             {
-                await _courseWebApiClient.AddTestResult(newTestResult);
-            }
+                var activeCourses = await _courseWebApiClient.GetAllActiveCourses();
+                foreach (var course in activeCourses)
+                {
+                    Console.WriteLine($"{course.Name}");
+                }
+                var selectCourse = _cliHelper.GetStringFromUser("Enter name of course you want to close");
+                Course updateCourse = new Course()
+                {
+                    Name = selectCourse,
+                    State = State.Closed,
+                };
+                await _courseWebApiClient.CloseTheCourse(updateCourse);
+                CourseResults courseResults = new CourseResults();
+                courseResults = await _courseWebApiClient.GetCourseResults(_selectedCourse.Id);
+                //foreach (var course in courseResults)
+                //{
+                //    using (var client = new SmtpClient())
+                //    using (var mail = new MailMessage())
+                //    {
+                //        mail.From = new MailAddress("moj@mail.pl");
+                //        mail.Body = $"Homework results {course.HomeworkResults.HomeworkName} - {course.HomeworkResults.Result}. " +
+                //            $"Test results {course.TestResults.TestName} - {course.TestResults.Result}" +
+                //            $"Presense results {course.StudentPresence}";                           
+                //        mail.To.Add(new MailAddress(course.Student.Email));
+                //        client.Send(mail);
+                //    }
+                //}
+            }                    
+        }
+
+        private async void AddTestResultsAsync()
+        {
+            if (_selectedCourse.State.ToString().ToLower() == "close")
+            {
+                TestResults newTestResult = new TestResults()
+                {
+                    TestName = _cliHelper.GetStringFromUser("Enter test name"),
+                    FinishDate = _cliHelper.GetDateFromUser("Enter end date of test"),
+                    StudentId = _cliHelper.GetIntFromUser("Enter student id"),
+                    Result = _cliHelper.GetIntFromUser("Enter result of test (0-100)"),
+                };
+                if (newTestResult.Result > 100)
+                {
+                    Console.WriteLine("Value cannot be higher than 100");
+                }
+                else
+                {
+                    await _courseWebApiClient.AddTestResult(newTestResult);
+                }
+            }           
         }
 
         private async void AddHomeworkResults()
         {
-            HomeworkResults newResults = new HomeworkResults()
+            if (_selectedCourse.State.ToString().ToLower() == "close")
             {
-                HomeworkName = _cliHelper.GetStringFromUser("Enter homework name"),
-                FinishDate = _cliHelper.GetDateFromUser("Enter homework deadline"),
-                StudentId = _cliHelper.GetIntFromUser("Enter student Id"),
-                CourseId = _selectedCourse.Id,
-                Result = float.Parse(_cliHelper.GetStringFromUser("Enter homework result (0-200)")),
-            };
-            if (newResults.Result > 200)
-            {
-                Console.WriteLine("Value cannot be higher than 200");
-            }
-            else
-            {
-                await _courseWebApiClient.AddHomeworkResult(newResults);
-            }
-
+                HomeworkResults newResults = new HomeworkResults()
+                {
+                    HomeworkName = _cliHelper.GetStringFromUser("Enter homework name"),
+                    FinishDate = _cliHelper.GetDateFromUser("Enter homework deadline"),
+                    StudentId = _cliHelper.GetIntFromUser("Enter student Id"),
+                    Result = float.Parse(_cliHelper.GetStringFromUser("Enter homework result (0-200)")),
+                };
+                if (newResults.Result > 200)
+                {
+                    Console.WriteLine("Value cannot be higher than 200");
+                }
+                else
+                {
+                    await _courseWebApiClient.AddHomeworkResult(newResults);
+                }
+            }          
         }
 
         private async void AddPresence()

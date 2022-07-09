@@ -55,6 +55,7 @@
     <Compile Include="CourseManager.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\CourseResult.cs" />
     <Compile Include="Models\CourseResults.cs" />
     <Compile Include="Models\HomeworkResults.cs" />
     <Compile Include="Models\MenuItem.cs" />

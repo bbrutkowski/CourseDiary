@@ -40,6 +40,31 @@ namespace CourseDiary.TrainerClient.Clients
             }
         }
 
+        public async Task<bool> CloseTheCourse(Course course)
+        {
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(course), System.Text.Encoding.UTF8, "application/json");
+
+                var responseBody = await _client.PostAsync(@"http://localhost:9000/api/v1/course/closeCourse", content);
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+
+                return bool.Parse(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return false;
+            }
+        }
+
         public async Task<List<Course>> GetAllActiveCourses()
         {
             try
@@ -138,6 +163,29 @@ namespace CourseDiary.TrainerClient.Clients
                 return false;
             }
         }
+
+        //public async Task<List<CourseResult>> GetCourseResults(int id)
+        //{
+        //    try
+        //    {
+        //        var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/course/courseResults/{id}");
+
+        //        var result = await responseBody.Content.ReadAsStringAsync();
+
+        //        if (!responseBody.IsSuccessStatusCode)
+        //        {
+        //            return new List<CourseResult>();
+        //        }
+
+        //        return JsonConvert.DeserializeObject<List<CourseResult>>(result);
+        //    }
+        //    catch (HttpRequestException e)
+        //    {
+        //        Console.WriteLine("\nException Caught!");
+        //        Console.WriteLine("Message :{0} ", e.Message);
+        //        return new List<CourseResult>();
+        //    }
+        //}
 
         public async Task<List<StudentPresence>> GetCourseStudentPresence(int id)
         {

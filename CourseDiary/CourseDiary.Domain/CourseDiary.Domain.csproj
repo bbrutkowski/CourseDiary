@@ -48,6 +48,8 @@
     <Compile Include="Models\Course.cs" />
     <Compile Include="Interfaces\IStudentRepository.cs" />
     <Compile Include="Models\CourseResults.cs" />
+    <Compile Include="Models\CourseRate.cs" />
+    <Compile Include="Models\CourseResult.cs" />
     <Compile Include="Models\HomeworkResults.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Interfaces\ITrainerRepository.cs" />

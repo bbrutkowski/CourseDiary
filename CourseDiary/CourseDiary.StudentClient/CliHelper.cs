@@ -14,7 +14,7 @@ namespace CourseDiary.StudentClient
 
             do
             {
-                Console.Write($"{message}: ");
+                Console.Write($"{message}: \n");
                 inputFromUser = Console.ReadLine();
 
                 if (string.IsNullOrEmpty(inputFromUser))
@@ -57,6 +57,31 @@ namespace CourseDiary.StudentClient
             }
 
             return data;
+        }
+
+        internal float GetRateFromUser(string message)
+        {
+            int result = 0;
+            bool success = false;
+
+            do
+            {
+                string text = GetStringFromUser(message);
+                success = int.TryParse(text, out result);
+
+                if (!success)
+                {
+                    Console.WriteLine("Not a number. Try again...");
+                }
+
+                if(result>10 || result < 1)
+                {
+                    Console.WriteLine("You have to choose rate between 1 and 10");
+                }
+
+            }while(result > 10 || result < 1);
+
+            return result;
         }
     }
 }
