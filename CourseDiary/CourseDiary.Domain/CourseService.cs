@@ -67,5 +67,10 @@ namespace CourseDiary.Domain
         {
             return await _courseRepository.AddTestResult(testResult);
         }
+
+        public async Task<List<CourseResult>> GetCourseResults(int id)
+        {
+            return await _courseRepository.GetAllCourseResults(id);
+        }
     }
 }

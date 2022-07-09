@@ -62,6 +62,7 @@
   <ItemGroup>
     <Content Include="SQL\AddColumnStateToCourses.sql" />
     <Content Include="SQL\AddHomeworkResultTable.sql" />
+    <Content Include="SQL\AddTestResultsTable.sql" />
     <Content Include="SQL\CreateTableStudents.sql" />
     <Content Include="SQL\CREATE_COURSES_TABLE.sql" />
     <Content Include="SQL\Script1.sql" />

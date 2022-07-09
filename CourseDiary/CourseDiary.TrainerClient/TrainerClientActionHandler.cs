@@ -3,6 +3,7 @@ using CourseDiary.TrainerClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 
 namespace CourseDiary.TrainerClient
 {
@@ -31,7 +32,7 @@ namespace CourseDiary.TrainerClient
 
             while (!exit)
             {
-                string operation = _cliHelper.GetStringFromUser("");
+                string operation = _cliHelper.GetStringFromUser("Press 1 to select active course");
 
                 switch (operation)
                 {
@@ -142,7 +143,21 @@ namespace CourseDiary.TrainerClient
                     State = State.Closed,
                 };
                 await _courseWebApiClient.CloseTheCourse(updateCourse);
-
+                List<CourseResult> courseResults = new List<CourseResult>();
+                courseResults = await _courseWebApiClient.GetCourseResults(_selectedCourse.Id);
+                foreach (var course in courseResults)
+                {
+                    using (var client = new SmtpClient())
+                    using (var mail = new MailMessage())
+                    {
+                        mail.From = new MailAddress("moj@mail.pl");
+                        mail.Body = $"Homework results {course.HomeworkResults.HomeworkName} - {course.HomeworkResults.Result}. " +
+                            $"Test results {course.TestResults.TestName} - {course.TestResults.Result}" +
+                            $"Presense results {course.StudentPresence}";                           
+                        mail.To.Add(new MailAddress(course.Student.Email));
+                        client.Send(mail);
+                    }
+                }
             }                    
         }
 
