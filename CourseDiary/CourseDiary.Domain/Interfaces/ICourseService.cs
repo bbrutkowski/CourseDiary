@@ -16,5 +16,7 @@ namespace CourseDiary.Domain.Interfaces
         Task<List<StudentPresence>> GetCourseStudentPresence(int courseId);
         Task<List<HomeworkResults>> GetCourseHomeworkResults(int courseId);
         Task<List<TestResults>> GetCourseTestResults(int courseId);
+        Task<bool> AddCourseResults(CourseResults courseResults);
+        Task<CourseResults> GetCourseResults(int courseId);
     }
 }

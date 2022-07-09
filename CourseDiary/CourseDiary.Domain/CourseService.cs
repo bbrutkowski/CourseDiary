@@ -77,5 +77,15 @@ namespace CourseDiary.Domain
         {
             return await _courseRepository.GetCourseTestResults(courseId);
         }
+
+        public async Task<bool> AddCourseResults(CourseResults courseResults)
+        {
+            return await _courseRepository.AddCourseResults(courseResults);
+        }
+
+        public async Task<CourseResults> GetCourseResults(int courseId)
+        {
+            return await _courseRepository.GetCourseResults(courseId);
+        }
     }
 }

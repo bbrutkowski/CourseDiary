@@ -80,5 +80,19 @@ namespace CourseDiary.Server.Controllers
         {
             return await _courseService.GetCourseTestResults(id);
         }
+
+        [HttpPost]
+        [Route("results")]
+        public async Task<bool> AddCourseResults([FromBody] CourseResults courseResults)
+        {
+            return await _courseService.AddCourseResults(courseResults);
+        }
+
+        [HttpGet]
+        [Route("results/{courseId}")]
+        public async Task<CourseResults> GetCourseResults([FromUri] int courseId)
+        {
+            return await _courseService.GetCourseResults(courseId);
+        }
     }
 }

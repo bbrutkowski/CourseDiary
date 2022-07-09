@@ -45,5 +45,12 @@ namespace CourseDiary.Server.Controllers
         {
             return await _studentService.ShowMyCoursesAsync(email);
         }
+
+        [HttpGet]
+        [Route("course/{courseId}")]
+        public async Task<List<Student>> GetAllStudentsInCourseAsync([FromUri] int courseId)
+        {
+            return await _studentService.GetAllStudentsInCourseAsync(courseId);
+        }
     }
 }

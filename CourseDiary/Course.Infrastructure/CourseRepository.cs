@@ -55,7 +55,7 @@ namespace CourseDiary.Infrastructure
                         rowsAffected += await command.ExecuteNonQueryAsync();
                     }
 
-                    success = rowsAffected > 1;
+                    success = rowsAffected >= 1;
 
                     connection.Close();
                 }
@@ -80,29 +80,49 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = @"SELECT * FROM [Courses]";
+                    string commandText = @"SELECT [Courses].[Id] as [CourseId], [Courses].[Name] as [CourseName], [Courses].[BeginDate] as [CourseBeginDate], [Courses].[PresenceTreshold] as [CoursePresenceTreshold], [Courses].[HomeworkTreshold] as [CourseHomeworkTreshold], [Courses].[TestTreshold] as [CourseTestTreshold], [Courses].[State] as [CourseState], [Trainers].[Id] as [TrainerId], [Trainers].[Name] as [TrainerName], [Trainers].[Surname] as [TrainerSurname], [Trainers].[Email] as [TrainerEmail], [Trainers].[Password] as [TrainerPassword], [Trainers].[DateOfBirth] as [TrainerDateOfBirth] FROM [Courses] FULL OUTER JOIN [Trainers] ON [Trainers].[Id] = [TrainerId]";
                     SqlCommand command = new SqlCommand(commandText, connection);
                     SqlDataReader dataReader = command.ExecuteReader();
 
                     while (dataReader.Read())
                     {
                         Course course = new Course();
-                        course.Id = int.Parse(dataReader["Id"].ToString());
-                        course.Name = dataReader["Name"].ToString();
-                        course.BeginDate = DateTime.Parse(dataReader["BeginDate"].ToString());
+                        course.Id = int.Parse(dataReader["CourseId"].ToString());
+                        course.Name = dataReader["CourseName"].ToString();
+                        course.BeginDate = DateTime.Parse(dataReader["CourseBeginDate"].ToString());
                         course.Trainer = new Trainer
                         {
-                            Id = int.Parse(dataReader["Id"].ToString()),
-                            Name = dataReader["Name"].ToString(),
-                            Surname = dataReader["Surname"].ToString(),
-                            Email = dataReader["Email"].ToString(),
-                            Password = dataReader["Password"].ToString(),
-                            DateOfBirth = DateTime.Parse(dataReader["DateOfBirth"].ToString())
+                            Id = int.Parse(dataReader["TrainerId"].ToString()),
+                            Name = dataReader["TrainerName"].ToString(),
+                            Surname = dataReader["TrainerSurname"].ToString(),
+                            Email = dataReader["TrainerEmail"].ToString(),
+                            Password = dataReader["TrainerPassword"].ToString(),
+                            DateOfBirth = DateTime.Parse(dataReader["TrainerDateOfBirth"].ToString())
                         };
-                        course.PresenceTreshold = double.Parse(dataReader["TestTreshold"].ToString());
-                        course.HomeworkTreshold = double.Parse(dataReader["TestTreshold"].ToString());
-                        course.TestTreshold = double.Parse(dataReader["TestTreshold"].ToString());
-                        course.State = Enum.TryParse(dataReader["State"].ToString(), out State cos) ? cos : course.State;
+                        course.PresenceTreshold = double.Parse(dataReader["CoursePresenceTreshold"].ToString());
+                        course.HomeworkTreshold = double.Parse(dataReader["CourseHomeworkTreshold"].ToString());
+                        course.TestTreshold = double.Parse(dataReader["CourseTestTreshold"].ToString());
+                        course.State = Enum.TryParse(dataReader["CourseState"].ToString(), out State cos) ? cos : course.State;
+
+                        string studentCommandText = @"SELECT [Students].[Id] as [StudentId], [Students].[Name] as [StudentName], [Students].[Surname] as [StudentSurname], [Students].[Email] as [StudentEmail], [Students].[Password] as [StudentPassword], [Students].[BirthDate] as [StudentBirthDate] FROM [CourseStudents] RIGHT JOIN [Students] ON [CourseStudents].[StudentId] = [Students].[Id] WHERE [CourseStudents].[CourseId] = @Id";
+                        SqlCommand studentCommand = new SqlCommand(studentCommandText, connection);
+                        studentCommand.Parameters.Add("@Id", SqlDbType.Int).Value = course.Id;
+
+                        SqlDataReader studentDataReader = await studentCommand.ExecuteReaderAsync();
+
+                        List<Student> students = new List<Student>();
+                        while (studentDataReader.Read())
+                        {
+                            Student student = new Student();
+                            student.Id = int.Parse(dataReader["StudentId"].ToString());
+                            student.Name = dataReader["StudentName"].ToString();
+                            student.Surname = dataReader["StudentSurname"].ToString();
+                            student.Password = dataReader["StudentPassword"].ToString();
+                            student.Email = dataReader["StudentEmail"].ToString();
+                            student.BirthDate = DateTime.Parse(dataReader["StudentBirthDate"].ToString());
+
+                            students.Add(student);
+                        }
 
                         courses.Add(course);
                     }
@@ -228,9 +248,11 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = @"SELECT * FROM [StudentPresence]";
+                    string commandText = @"SELECT * FROM [StudentPresence] WHERE [StudentPresence].[CourseId] = @CourseId";
                     SqlCommand command = new SqlCommand(commandText, connection);
-                    SqlDataReader dataReader = command.ExecuteReader();
+                    command.Parameters.Add("@CourseId", SqlDbType.Int).Value = courseId;
+
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
 
                     while (dataReader.Read())
                     {
@@ -264,8 +286,10 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = @"SELECT * FROM [HomeworkResults]";
+                    string commandText = @"SELECT * FROM [HomeworkResults] WHERE [HomeworkResults].[CourseId] = @CourseId";
                     SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@CourseId", SqlDbType.Int).Value = courseId;
+
                     SqlDataReader dataReader = command.ExecuteReader();
 
                     while (dataReader.Read())
@@ -301,8 +325,10 @@ namespace CourseDiary.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandText = @"SELECT * FROM [TestResults]";
+                    string commandText = @"SELECT * FROM [TestResults] WHERE [TestResults].[CourseId] = @CourseId";
                     SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@CourseId", SqlDbType.Int).Value = courseId;
+
                     SqlDataReader dataReader = command.ExecuteReader();
 
                     while (dataReader.Read())
@@ -326,6 +352,185 @@ namespace CourseDiary.Infrastructure
             }
 
             return testResults;
+        }
+
+        public async Task<Course> GetCourse(int id)
+        {
+            Course course = new Course();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = @"SELECT [Courses].[Id] as [CourseId], [Courses].[Name] as [CourseName], [Courses].[BeginDate] as [CourseBeginDate], [Courses].[PresenceTreshold] as [CoursePresenceTreshold], [Courses].[HomeworkTreshold] as [CourseHomeworkTreshold], [Courses].[TestTreshold] as [CourseTestTreshold], [Courses].[State] as [CourseState], [Trainers].[Id] as [TrainerId], [Trainers].[Name] as [TrainerName], [Trainers].[Surname] as [TrainerSurname], [Trainers].[Email] as [TrainerEmail], [Trainers].[Password] as [TrainerPassword], [Trainers].[DateOfBirth] as [TrainerDateOfBirth] FROM [Courses] FULL OUTER JOIN [Trainers] ON [Trainers].[Id] = [TrainerId] WHERE [Courses].[Id] = @Id";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                    SqlDataReader dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        course.Id = int.Parse(dataReader["CourseId"].ToString());
+                        course.Name = dataReader["CourseName"].ToString();
+                        course.BeginDate = DateTime.Parse(dataReader["CourseBeginDate"].ToString());
+                        course.Trainer = new Trainer
+                        {
+                            Id = int.Parse(dataReader["TrainerId"].ToString()),
+                            Name = dataReader["TrainerName"].ToString(),
+                            Surname = dataReader["TrainerSurname"].ToString(),
+                            Email = dataReader["TrainerEmail"].ToString(),
+                            Password = dataReader["TrainerPassword"].ToString(),
+                            DateOfBirth = DateTime.Parse(dataReader["TrainerDateOfBirth"].ToString())
+                        };
+                        course.PresenceTreshold = double.Parse(dataReader["CoursePresenceTreshold"].ToString());
+                        course.HomeworkTreshold = double.Parse(dataReader["CourseHomeworkTreshold"].ToString());
+                        course.TestTreshold = double.Parse(dataReader["CourseTestTreshold"].ToString());
+                        course.State = Enum.TryParse(dataReader["CourseState"].ToString(), out State cos) ? cos : course.State;
+
+                        string studentCommandText = @"SELECT [Students].[Id] as [StudentId], [Students].[Name] as [StudentName], [Students].[Surname] as [StudentSurname], [Students].[Email] as [StudentEmail], [Students].[Password] as [StudentPassword], [Students].[BirthDate] as [StudentBirthDate] FROM [CourseStudents] RIGHT JOIN [Students] ON [CourseStudents].[StudentId] = [Students].[Id] WHERE [CourseStudents].[CourseId] = @Id";
+                        SqlCommand studentCommand = new SqlCommand(studentCommandText, connection);
+                        studentCommand.Parameters.Add("@Id", SqlDbType.Int).Value = course.Id;
+
+                        SqlDataReader studentDataReader = await studentCommand.ExecuteReaderAsync();
+
+                        List<Student> students = new List<Student>();
+                        while (studentDataReader.Read())
+                        {
+                            Student student = new Student();
+                            student.Id = int.Parse(dataReader["StudentId"].ToString());
+                            student.Name = dataReader["StudentName"].ToString();
+                            student.Surname = dataReader["StudentSurname"].ToString();
+                            student.Password = dataReader["StudentPassword"].ToString();
+                            student.Email = dataReader["StudentEmail"].ToString();
+                            student.BirthDate = DateTime.Parse(dataReader["StudentBirthDate"].ToString());
+
+                            students.Add(student);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+
+                course = null;
+            }
+
+            return course;
+        }
+
+        public async Task<bool> AddCourseResults(CourseResults courseResults)
+        {
+            bool success;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = $"INSERT INTO [CourseResults] ([CourseId]) VALUES (@CourseId)";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@Name", SqlDbType.Int).Value = courseResults.Course.Id;
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                    string getLastAddedCourseIdCommandSql = $"SELECT IDENT_CURRENT('CourseResults') AS [CourseResultsId];";
+                    SqlCommand getLastAddedCourseIdCommand = new SqlCommand(getLastAddedCourseIdCommandSql, connection);
+                    SqlDataReader reader = await getLastAddedCourseIdCommand.ExecuteReaderAsync();
+                    await reader.ReadAsync();
+                    int courseResultsId = int.Parse(reader["CourseResultsId"].ToString());
+
+                    reader.Close();
+
+                    foreach (var studentResult in courseResults.StudentResults)
+                    {
+                        commandText = "INSERT INTO [StudentResults] ([CourseResultsId], [StudentId], [StudentPresencePercentage], [StudentJustifiedAbsencePercentage], [StudentHomeworkPercentage], [StudentTestPercentage]) VALUES (@CourseResultsId, @StudentId, @StudentPresencePercentage, @StudentJustifiedAbsencePercentage, @StudentHomeworkPercentage, @StudentTestPercentage)";
+                        command = new SqlCommand(commandText, connection);
+                        command.Parameters.Add("@CourseResultsId", SqlDbType.Int).Value = courseResultsId;
+                        command.Parameters.Add("@StudentId", SqlDbType.Int).Value = studentResult.Student.Id;
+                        command.Parameters.Add("@StudentPresencePercentage", SqlDbType.Float, 8).Value = studentResult.StudentPresencePercentage;
+                        command.Parameters.Add("@StudentJustifiedAbsencePercentage", SqlDbType.Float, 8).Value = studentResult.StudentJustifiedAbsencePercentage;
+                        command.Parameters.Add("@StudentHomeworkPercentage", SqlDbType.Float, 8).Value = studentResult.StudentHomeworkPercentage;
+                        command.Parameters.Add("@StudentTestPercentage", SqlDbType.Float, 8).Value = studentResult.StudentTestPercentage;
+
+                        rowsAffected += await command.ExecuteNonQueryAsync();
+                    }
+
+                    success = rowsAffected >= 1;
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                success = false;
+            }
+
+            return success;
+        }
+
+        public async Task<CourseResults> GetCourseResults(int courseId)
+        {
+            CourseResults courseResults = new CourseResults();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = @"SELECT * FROM [CourseResults] WHERE [CourseResults].[CourseId] = @CourseId";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@CourseId", SqlDbType.Int).Value = courseId;
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+
+                    while (dataReader.Read())
+                    {
+                        courseResults.Id = int.Parse(dataReader["Id"].ToString());
+                    }
+
+                    dataReader.Close();
+
+                    commandText = "[Students].[Id] as [StudentId], [Students].[Name] as [StudentName], [Students].[Surname] as [StudentSurname], [Students].[Email] as [StudentEmail], [Students].[Password] as [StudentPassword], [Students].[BirthDate] as [StudentBirthDate], [StudentPresencePercentage], [StudentJustifiedAbsencePercentage], [StudentHomeworkPercentage], [StudentTestPercentage] FROM [StudentResults] FULL OUTER JOIN [Students] ON [StudentResults].[StudentId] = [Students].[Id] WHERE [StudentResults].[CourseResultsId] = @CourseResultsId";
+                    command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@CourseResultsId", SqlDbType.Int).Value = courseResults.Id;
+                    dataReader = await command.ExecuteReaderAsync();
+
+                    List<StudentResult> studentResults = new List<StudentResult>();
+                    while (dataReader.Read())
+                    {
+                        StudentResult studentResult = new StudentResult();
+
+                        Student student = new Student();
+                        student.Id = int.Parse(dataReader["StudentId"].ToString());
+                        student.Name = dataReader["StudentName"].ToString();
+                        student.Surname = dataReader["StudentSurname"].ToString();
+                        student.Password = dataReader["StudentPassword"].ToString();
+                        student.Email = dataReader["StudentEmail"].ToString();
+                        student.BirthDate = DateTime.Parse(dataReader["StudentBirthDate"].ToString());
+                        
+                        studentResult.Student = student;
+                        studentResult.StudentPresencePercentage = float.Parse(dataReader["StudentPresencePercentage"].ToString());
+                        studentResult.StudentJustifiedAbsencePercentage = float.Parse(dataReader["StudentJustifiedAbsencePercentage"].ToString());
+                        studentResult.StudentHomeworkPercentage = float.Parse(dataReader["StudentHomeworkPercentage"].ToString());
+                        studentResult.StudentTestPercentage = float.Parse(dataReader["StudentTestPercentage"].ToString());
+
+                        studentResults.Add(studentResult);
+                    }
+
+                    courseResults.StudentResults = studentResults;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+
+                courseResults = null;
+            }
+
+            return courseResults;
         }
     }
 }

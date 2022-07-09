@@ -11,6 +11,8 @@ namespace CourseDiary.Domain
         Task<List<StudentInCourse>> ShowMyCoursesAsync(string email);
         Task<bool> CheckStudentCredentialsAsync(string email, string password);
         Task<List<Student>> GetAllStudentsAsync();
+
+        Task<List<Student>> GetAllStudentsInCourseAsync(int courseId);
     }
 
     public class StudentService : IStudentService
@@ -43,6 +45,11 @@ namespace CourseDiary.Domain
             var student = await _studentRepository.GetStudentAsync(email);
 
             return await _studentRepository.GetMyCoursesAsync(student.Id);
+        }
+
+        public async Task<List<Student>> GetAllStudentsInCourseAsync(int courseId)
+        {
+            return await _studentRepository.GetAllStudentsInCourseAsync(courseId);
         }
     }
 }

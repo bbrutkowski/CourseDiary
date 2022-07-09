@@ -188,7 +188,6 @@ namespace CourseDiary.TrainerClient
                 await _courseWebApiClient.AddPresence(presence);
                 Console.Clear();
             }
-            MenuForActiveCourse();
         }
 
         private void ShowSelectedCourse()
@@ -198,18 +197,45 @@ namespace CourseDiary.TrainerClient
 
         private async void GenerateCourseResults()
         {
+            List<Student> students = await _studentWebApiClient.GetAllStudentsInCourse(_selectedCourse.Id);
             List<StudentPresence> studentPresences = await _courseWebApiClient.GetCourseStudentPresence(_selectedCourse.Id);
             List<HomeworkResults> homeworkResults = await _courseWebApiClient.GetCourseHomeworkResults(_selectedCourse.Id);
             List<TestResults> testResults = await _courseWebApiClient.GetCourseTestResults(_selectedCourse.Id);
 
-            var studentJustifiedPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => g.Where(x => x.Equals(Presence.Justified)).ToList());
+            var studentJustifiedPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => (float)(g.Where(x => x.Equals(Presence.Justified)).ToList().Count()/g.Where(x => x.Equals(Presence.Absent) || x.Equals(Presence.Justified)).ToList().Count()));
             
-            var studentPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => g.Where(x => x.Equals(Presence.Present) || x.Equals(Presence.Justified)).ToList().Count()/g.ToList().Count());
+            var studentPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => (float)(g.Where(x => x.Equals(Presence.Present) || x.Equals(Presence.Justified)).ToList().Count()/g.ToList().Count()));
             
             var studentHomework = homeworkResults.GroupBy(x => x.StudentId, x => x.Result).ToDictionary(g => g.Key, g => g.ToList().Sum() / (g.ToList().Count() * 200));
             
             var studentTest = testResults.GroupBy(x => x.StudentId, x => x.Result).ToDictionary(g => g.Key, g => g.ToList().Sum()/(g.ToList().Count()*100));
 
+            List<StudentResult> studentResults = new List<StudentResult>();
+            foreach(var student in students)
+            {
+                studentResults.Add(new StudentResult()
+                {
+                    Student = student,
+                    CourseId = _selectedCourse.Id,
+                    StudentPresencePercentage = studentPresence[student.Id],
+                    StudentJustifiedAbsencePercentage = studentJustifiedPresence[student.Id],
+                    StudentHomeworkPercentage = studentHomework[student.Id],
+                    StudentTestPercentage = studentTest[student.Id]
+                });
+            }
+
+            CourseResults courseResults = new CourseResults()
+            {
+                Course = _selectedCourse,
+                StudentResults = studentResults
+            };
+
+            _courseWebApiClient.AddCourseResults(courseResults);
+        }
+
+        public async void ShowCourseResults()
+        {
+            CourseResults courseResults = await _courseWebApiClient.GetCourseResults(_selectedCourse.Id);
 
         }
     }
