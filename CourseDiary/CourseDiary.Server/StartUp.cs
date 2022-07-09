@@ -5,7 +5,7 @@ using System.Web.Http.Cors;
 
 namespace CourseDiary.Server
 {
-    internal class StartUp
+    public class StartUp
     {
         public void Configuration(IAppBuilder appBuilder)
         {

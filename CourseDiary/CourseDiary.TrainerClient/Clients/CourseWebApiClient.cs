@@ -162,6 +162,29 @@ namespace CourseDiary.TrainerClient.Clients
                 Console.WriteLine("Message :{0} ", e.Message);
                 return false;
             }
-        }        
+        }
+
+        public async Task<List<CourseResult>> GetCourseResults(int id)
+        {
+            try
+            {
+                var responseBody = await _client.GetAsync($@"http://localhost:9000/api/v1/course/courseResults/{id}");
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+
+                if (!responseBody.IsSuccessStatusCode)
+                {
+                    return new List<CourseResult>();
+                }
+
+                return JsonConvert.DeserializeObject<List<CourseResult>>(result);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return new List<CourseResult>();
+            }
+        }
     }
 }
