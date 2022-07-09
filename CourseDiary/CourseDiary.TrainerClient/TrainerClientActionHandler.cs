@@ -15,7 +15,6 @@ namespace CourseDiary.TrainerClient
         private readonly StudentWebApiClient _studentWebApiClient;
         private Trainer _loggedTrainer = null;
         private Course _selectedCourse;
-        private int _courseId;
 
         public TrainerClientActionHandler()
         {
@@ -65,7 +64,7 @@ namespace CourseDiary.TrainerClient
                 }
             }
             return exit;
-        }       
+        }
 
         private async void SelectActiveCourse()
         {
@@ -76,7 +75,6 @@ namespace CourseDiary.TrainerClient
             }
             var selectedId = _cliHelper.GetIntFromUser("Enter id of course you want to choose: ");
             _selectedCourse = allActiveCourses.Where(x => x.Id == selectedId).ToList()[0];
-            _courseId = selectedId;
             MenuForActiveCourse();
         }
 
@@ -96,13 +94,15 @@ namespace CourseDiary.TrainerClient
                         break;
                     case "3":
                         AddHomeworkResults();
-                        break;                       
+                        break;
                     case "4":
                         AddTestResultsAsync();
                         break;
                     case "5":
+                        GenerateCourseResults();
                         break;
                     case "6":
+                        ShowCourseResults();
                         break;
                     case "7":
                         ClosingCourse();
@@ -143,31 +143,27 @@ namespace CourseDiary.TrainerClient
                     State = State.Closed,
                 };
                 await _courseWebApiClient.CloseTheCourse(updateCourse);
-                List<CourseResult> courseResults = new List<CourseResult>();
+                CourseResults courseResults = new CourseResults();
                 courseResults = await _courseWebApiClient.GetCourseResults(_selectedCourse.Id);
-                foreach (var course in courseResults)
-                {
-                    using (var client = new SmtpClient())
-                    using (var mail = new MailMessage())
-                    {
-                        mail.From = new MailAddress("moj@mail.pl");
-                        mail.Body = $"Homework results {course.HomeworkResults.HomeworkName} - {course.HomeworkResults.Result}. " +
-                            $"Test results {course.TestResults.TestName} - {course.TestResults.Result}" +
-                            $"Presense results {course.StudentPresence}";                           
-                        mail.To.Add(new MailAddress(course.Student.Email));
-                        client.Send(mail);
-                    }
-                }
+                //foreach (var course in courseResults)
+                //{
+                //    using (var client = new SmtpClient())
+                //    using (var mail = new MailMessage())
+                //    {
+                //        mail.From = new MailAddress("moj@mail.pl");
+                //        mail.Body = $"Homework results {course.HomeworkResults.HomeworkName} - {course.HomeworkResults.Result}. " +
+                //            $"Test results {course.TestResults.TestName} - {course.TestResults.Result}" +
+                //            $"Presense results {course.StudentPresence}";                           
+                //        mail.To.Add(new MailAddress(course.Student.Email));
+                //        client.Send(mail);
+                //    }
+                //}
             }                    
         }
 
         private async void AddTestResultsAsync()
         {
             if (_selectedCourse.State.ToString().ToLower() == "close")
-            {
-                Console.WriteLine("You can't do that. This course is closed");
-            }
-            else
             {
                 TestResults newTestResult = new TestResults()
                 {
@@ -191,10 +187,6 @@ namespace CourseDiary.TrainerClient
         {
             if (_selectedCourse.State.ToString().ToLower() == "close")
             {
-                Console.WriteLine("You cant do that. This course is closed");
-            }
-            else
-            {
                 HomeworkResults newResults = new HomeworkResults()
                 {
                     HomeworkName = _cliHelper.GetStringFromUser("Enter homework name"),
@@ -215,45 +207,139 @@ namespace CourseDiary.TrainerClient
 
         private async void AddPresence()
         {
-            if (_selectedCourse.State.ToString().ToLower() == "close")
+            List<Student> students = await _studentWebApiClient.GetAllStudents();
+            foreach (Student student in students)
             {
-                Console.WriteLine("This course is closed. You cant do that");
-            }
-            else
-            {
-                List<Student> students = await _studentWebApiClient.GetAllStudents();
-                foreach (Student student in students)
+                Console.WriteLine($"{student.Id}. {student.Name} {student.Surname} - {student.Email}");
+                StudentPresence presence = new StudentPresence();
+                presence.StudentId = student.Id;
+                presence.CourseId = _selectedCourse.Id;
+                presence.LessonDate = _cliHelper.GetDateFromUser("Lesson date(dd-mm-yyyy): ");
+                switch (_cliHelper.GetIntFromUser("Choose type of presence: \n1.Present \n2.Absent \n3.Justified"))
                 {
-                    Console.WriteLine($"{student.Id}. {student.Name} {student.Surname} - {student.Email}");
-                    StudentPresence presence = new StudentPresence();
-                    presence.Student = student;
-                    presence.Course = _selectedCourse;
-                    presence.LessonDate = _cliHelper.GetDateFromUser("Lesson date(dd-mm-yyyy): ");
-                    switch (_cliHelper.GetIntFromUser("Choose type of presence: \n1.Present \n2.Absent \n3.Justified"))
-                    {
-                        case 1:
-                            presence.Presence = Presence.Present;
-                            break;
-                        case 2:
-                            presence.Presence = Presence.Absent;
-                            break;
-                        case 3:
-                            presence.Presence = Presence.Justified;
-                            break;
-                        default:
-                            Console.WriteLine("Wrong option");
-                            break;
-                    }
-                    await _courseWebApiClient.AddPresence(presence);
-                    Console.Clear();
+                    case 1:
+                        presence.Presence = Presence.Present;
+                        break;
+                    case 2:
+                        presence.Presence = Presence.Absent;
+                        break;
+                    case 3:
+                        presence.Presence = Presence.Justified;
+                        break;
+                    default:
+                        Console.WriteLine("Wrong option");
+                        break;
                 }
-                MenuForActiveCourse();
-            }            
+                await _courseWebApiClient.AddPresence(presence);
+                Console.Clear();
+            }
         }
 
         private void ShowSelectedCourse()
         {
             Console.WriteLine($"Course name:  {_selectedCourse.Name} \n Trainer:  {_selectedCourse.Trainer.Name} {_selectedCourse.Trainer.Surname} \n Begin date: {_selectedCourse.BeginDate} \n");
+        }
+
+        private async void GenerateCourseResults()
+        {
+            List<Student> students = await _studentWebApiClient.GetAllStudentsInCourse(_selectedCourse.Id);
+            List<StudentPresence> studentPresences = await _courseWebApiClient.GetCourseStudentPresence(_selectedCourse.Id);
+            List<HomeworkResults> homeworkResults = await _courseWebApiClient.GetCourseHomeworkResults(_selectedCourse.Id);
+            List<TestResults> testResults = await _courseWebApiClient.GetCourseTestResults(_selectedCourse.Id);
+
+            var studentJustifiedPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => (float)(g.Where(x => x.Equals(Presence.Justified)).ToList().Count()/g.Where(x => x.Equals(Presence.Absent) || x.Equals(Presence.Justified)).ToList().Count()));
+            
+            var studentPresence = studentPresences.GroupBy(x => x.StudentId, x => x.Presence).ToDictionary(g => g.Key, g => (float)(g.Where(x => x.Equals(Presence.Present) || x.Equals(Presence.Justified)).ToList().Count()/g.ToList().Count()));
+            
+            var studentHomework = homeworkResults.GroupBy(x => x.StudentId, x => x.Result).ToDictionary(g => g.Key, g => g.ToList().Sum() / (g.ToList().Count() * 200));
+            
+            var studentTest = testResults.GroupBy(x => x.StudentId, x => x.Result).ToDictionary(g => g.Key, g => g.ToList().Sum()/(g.ToList().Count()*100));
+
+            List<StudentResult> studentResults = new List<StudentResult>();
+            foreach(var student in students)
+            {
+                FinalResult finalResult;
+                if(studentPresence[student.Id] >= _selectedCourse.PresenceTreshold && studentHomework[student.Id] >= _selectedCourse.HomeworkTreshold && studentTest[student.Id] >= _selectedCourse.TestTreshold)
+                {
+                    finalResult = FinalResult.Passed;
+                }
+                else
+                {
+                    finalResult = FinalResult.Failed;
+                }
+
+                studentResults.Add(new StudentResult()
+                {
+                    Student = student,
+                    CourseId = _selectedCourse.Id,
+                    StudentPresencePercentage = studentPresence[student.Id],
+                    StudentJustifiedAbsencePercentage = studentJustifiedPresence[student.Id],
+                    StudentHomeworkPercentage = studentHomework[student.Id],
+                    StudentTestPercentage = studentTest[student.Id],
+                    FinalResult = finalResult
+                });
+            }
+
+            CourseResults courseResults = new CourseResults()
+            {
+                Course = _selectedCourse,
+                StudentResults = studentResults
+            };
+
+            await _courseWebApiClient.AddCourseResults(courseResults);
+        }
+
+        public async void ShowCourseResults()
+        {
+            CourseResults courseResults = await _courseWebApiClient.GetCourseResults(_selectedCourse.Id);
+            Console.WriteLine($"{courseResults.Course.Name} - {courseResults.Course.Trainer.Name} {courseResults.Course.Trainer.Surname} - {courseResults.Course.BeginDate}");
+            foreach(var studentResult in courseResults.StudentResults)
+            {
+                Console.WriteLine($"{studentResult.Student.Name} {studentResult.Student.Surname} - {studentResult.Student.Email}");
+
+                if(studentResult.StudentPresencePercentage >= _selectedCourse.PresenceTreshold)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Presence Percentage: {studentResult.StudentPresencePercentage}");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"Justified Absence Percentage: {studentResult.StudentJustifiedAbsencePercentage}");
+
+                if (studentResult.StudentHomeworkPercentage >= _selectedCourse.HomeworkTreshold)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Homework Percentage: {studentResult.StudentHomeworkPercentage}");
+
+                if (studentResult.StudentTestPercentage >= _selectedCourse.PresenceTreshold)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Test Percentage: {studentResult.StudentTestPercentage}");
+
+                if (studentResult.FinalResult == FinalResult.Passed)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Final Result: {studentResult.FinalResult} \n");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
     }
 }

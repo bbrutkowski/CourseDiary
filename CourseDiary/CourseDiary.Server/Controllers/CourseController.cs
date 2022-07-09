@@ -33,7 +33,7 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpPost]
-        [Route("addhomework")]
+        [Route("homework")]
         public async Task<bool> AddHomeworkResult([FromBody] HomeworkResults result)
         {
             return await _courseService.AddHomeworkResult(result);
@@ -47,14 +47,14 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpPost]
-        [Route("AddTestResult")]
+        [Route("test")]
         public async Task<bool> AddTestResult([FromBody] TestResults testResult)
         {
             return await _courseService.AddTestResult(testResult);
         }
         
         [HttpPost]
-        [Route("addpresence")]
+        [Route("presence")]
         public async Task<bool> AddPresence([FromBody] StudentPresence presence)
         {
             return await _courseService.AddPresence(presence);
@@ -68,11 +68,38 @@ namespace CourseDiary.Server.Controllers
         }
 
         [HttpGet]
-        [Route("courseResults/{id}")]
-        public async Task<List<CourseResult>> GetCourseResults(int id)
+        [Route("{id}/presence")]
+        public async Task<List<StudentPresence>> GetCourseStudentPresence([FromUri] int id)
         {
-            return await _courseService.GetCourseResults(id);
+            return await _courseService.GetCourseStudentPresence(id);
         }
 
+        [HttpGet]
+        [Route("{id}/homework")]
+        public async Task<List<HomeworkResults>> GetCourseHomeworkResults([FromUri] int id)
+        {
+            return await _courseService.GetCourseHomeworkResults(id);
+        }
+
+        [HttpGet]
+        [Route("{id}/test")]
+        public async Task<List<TestResults>> GetCourseTestResults([FromUri] int id)
+        {
+            return await _courseService.GetCourseTestResults(id);
+        }
+
+        [HttpPost]
+        [Route("results")]
+        public async Task<bool> AddCourseResults([FromBody] CourseResults courseResults)
+        {
+            return await _courseService.AddCourseResults(courseResults);
+        }
+
+        [HttpGet]
+        [Route("results/{courseId}")]
+        public async Task<CourseResults> GetCourseResults([FromUri] int courseId)
+        {
+            return await _courseService.GetCourseResults(courseId);
+        }
     }
 }

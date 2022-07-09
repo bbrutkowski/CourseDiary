@@ -19,11 +19,11 @@ namespace CourseDiary.Domain
 
         public async Task<bool> Add(Course course)
         {
-            if(course.Students.Count < 5 || course.Students.Count > 20)
+            if (course.Students.Count < 5 || course.Students.Count > 20)
             {
                 throw new Exception("The amount of students must be between 5 and 20");
             }
-            else if(course.Trainer == null)
+            else if (course.Trainer == null)
             {
                 throw new Exception("Trainer must be assaigned");
             }
@@ -36,8 +36,8 @@ namespace CourseDiary.Domain
             List<Course> activeCourses = new List<Course>();
 
             activeCourses = courses
-                .Where(x=>x.State == State.Open)
-                .ToList();           
+                .Where(x => x.State == State.Open)
+                .ToList();
 
             return activeCourses;
         }
@@ -45,7 +45,7 @@ namespace CourseDiary.Domain
         public async Task<List<Course>> GetAllCourses()
         {
             return await _courseRepository.GetAllCoursesAsync();
-        }
+		}
 
         public async Task<bool> CloseCourse(Course course)
         {
@@ -62,15 +62,35 @@ namespace CourseDiary.Domain
         {
             return await _courseRepository.AddPresence(presence);
         }
-        
+
         public async Task<bool> AddTestResult(TestResults testResult)
         {
             return await _courseRepository.AddTestResult(testResult);
         }
 
-        public async Task<List<CourseResult>> GetCourseResults(int id)
+        public async Task<List<StudentPresence>> GetCourseStudentPresence(int courseId)
         {
-            return await _courseRepository.GetAllCourseResults(id);
+            return await _courseRepository.GetCourseStudentPresence(courseId);
+        }
+
+        public async Task<List<HomeworkResults>> GetCourseHomeworkResults(int courseId)
+        {
+            return await _courseRepository.GetCourseHomeworkResults(courseId);
+        }
+
+        public async Task<List<TestResults>> GetCourseTestResults(int courseId)
+        {
+            return await _courseRepository.GetCourseTestResults(courseId);
+        }
+
+        public async Task<bool> AddCourseResults(CourseResults courseResults)
+        {
+            return await _courseRepository.AddCourseResults(courseResults);
+        }
+
+        public async Task<CourseResults> GetCourseResults(int courseId)
+        {
+            return await _courseRepository.GetCourseResults(courseId);
         }
     }
 }

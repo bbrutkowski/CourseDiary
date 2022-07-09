@@ -6,5 +6,6 @@
         public HomeworkResults HomeworkResults { get; set; }
         public TestResults TestResults { get; set; }
         public bool isComplited { get; set; }
+        public Student Student { get; set; }
     }
 }

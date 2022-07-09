@@ -117,6 +117,44 @@ namespace CourseDiary.Infrastructure
             return student;
         }
 
+        public async Task<List<Student>> GetAllStudentsInCourseAsync(int courseId)
+        {
+            List<Student> students = new List<Student>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string commandText = @"SELECT [Students].[Id] as [StudentId], [Students].[Name] as [StudentName], [Students].[Surname] as [StudentSurname], [Students].[Email] as [StudentEmail], [Students].[Password] as [StudentPassword], [Students].[BirthDate] as [StudentBirthDate] FROM [CourseStudents] RIGHT JOIN [Students] ON [CourseStudents].[StudentId] = [Students].[Id] WHERE [CourseStudents].[CourseId] = @Id";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@Id", SqlDbType.Int).Value = courseId;
+
+                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+
+                    while (dataReader.Read())
+                    {
+                        Student student = new Student();
+                        student.Id = int.Parse(dataReader["StudentId"].ToString());
+                        student.Name = dataReader["StudentName"].ToString();
+                        student.Surname = dataReader["StudentSurname"].ToString();
+                        student.Password = dataReader["StudentPassword"].ToString();
+                        student.Email = dataReader["StudentEmail"].ToString();
+                        student.BirthDate = DateTime.Parse(dataReader["StudentBirthDate"].ToString());
+
+                        students.Add(student);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                students = null;
+            }
+            return students;
+        }
+
         public async Task<List<StudentInCourse>> GetMyCoursesAsync(int id)
         {
             List<StudentInCourse> courses = new List<StudentInCourse>();

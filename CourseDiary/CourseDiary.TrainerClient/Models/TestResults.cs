@@ -12,6 +12,7 @@ namespace CourseDiary.TrainerClient.Models
         public string TestName { get; set; }
         public DateTime FinishDate { get; set; }
         public int StudentId { get; set; }
+        public int CourseId { get; set; }
         public float Result { get; set; }
     }
 }

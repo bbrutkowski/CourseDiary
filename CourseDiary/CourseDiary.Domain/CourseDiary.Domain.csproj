@@ -47,6 +47,7 @@
     <Compile Include="Interfaces\ICourseService.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Interfaces\IStudentRepository.cs" />
+    <Compile Include="Models\CourseResults.cs" />
     <Compile Include="Models\CourseRate.cs" />
     <Compile Include="Models\CourseResult.cs" />
     <Compile Include="Models\HomeworkResults.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Interfaces\ITrainerRepository.cs" />
     <Compile Include="Models\StudentCredentials.cs" />
     <Compile Include="Models\StudentInCourse.cs" />
+    <Compile Include="Models\StudentResult.cs" />
     <Compile Include="Models\TestResults.cs" />
     <Compile Include="Models\StudentPresence.cs" />
     <Compile Include="TrainerService.cs" />

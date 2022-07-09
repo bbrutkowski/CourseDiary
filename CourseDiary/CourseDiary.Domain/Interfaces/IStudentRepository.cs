@@ -14,5 +14,6 @@ namespace CourseDiary.Domain.Interfaces
         Task<Student> GetStudentAsync(string email);
         Task<List<StudentInCourse>> GetMyCoursesAsync(int id);
         Task<bool> AddCourseRateAsync(CourseRate newRate);
+        Task<List<Student>> GetAllStudentsInCourseAsync(int courseId);
     }
 }
