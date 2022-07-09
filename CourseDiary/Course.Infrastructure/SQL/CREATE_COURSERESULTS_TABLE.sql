@@ -10,5 +10,6 @@ CREATE TABLE [StudentResults](
 	[StudentPresencePercentage] FLOAT(8) NOT NULL,
 	[StudentJustifiedAbsencePercentage] FLOAT(8) NOT NULL,
 	[StudentHomeworkPercentage] FLOAT(8) NOT NULL,
-	[StudentTestPercentage] FLOAT(8) NOT NULL
+	[StudentTestPercentage] FLOAT(8) NOT NULL,
+	[FinalResult] VARCHAR(255) NOT NULL
 )

@@ -98,8 +98,10 @@ namespace CourseDiary.TrainerClient
                         AddTestResultsAsync();
                         break;
                     case "5":
+                        GenerateCourseResults();
                         break;
                     case "6":
+                        ShowCourseResults();
                         break;
                     case "7":
                         break;
@@ -213,6 +215,16 @@ namespace CourseDiary.TrainerClient
             List<StudentResult> studentResults = new List<StudentResult>();
             foreach(var student in students)
             {
+                FinalResult finalResult;
+                if(studentPresence[student.Id] >= _selectedCourse.PresenceTreshold && studentHomework[student.Id] >= _selectedCourse.HomeworkTreshold && studentTest[student.Id] >= _selectedCourse.TestTreshold)
+                {
+                    finalResult = FinalResult.Passed;
+                }
+                else
+                {
+                    finalResult = FinalResult.Failed;
+                }
+
                 studentResults.Add(new StudentResult()
                 {
                     Student = student,
@@ -220,7 +232,8 @@ namespace CourseDiary.TrainerClient
                     StudentPresencePercentage = studentPresence[student.Id],
                     StudentJustifiedAbsencePercentage = studentJustifiedPresence[student.Id],
                     StudentHomeworkPercentage = studentHomework[student.Id],
-                    StudentTestPercentage = studentTest[student.Id]
+                    StudentTestPercentage = studentTest[student.Id],
+                    FinalResult = finalResult
                 });
             }
 
@@ -230,13 +243,60 @@ namespace CourseDiary.TrainerClient
                 StudentResults = studentResults
             };
 
-            _courseWebApiClient.AddCourseResults(courseResults);
+            await _courseWebApiClient.AddCourseResults(courseResults);
         }
 
         public async void ShowCourseResults()
         {
             CourseResults courseResults = await _courseWebApiClient.GetCourseResults(_selectedCourse.Id);
+            Console.WriteLine($"{courseResults.Course.Name} - {courseResults.Course.Trainer.Name} {courseResults.Course.Trainer.Surname} - {courseResults.Course.BeginDate}");
+            foreach(var studentResult in courseResults.StudentResults)
+            {
+                Console.WriteLine($"{studentResult.Student.Name} {studentResult.Student.Surname} - {studentResult.Student.Email}");
 
+                if(studentResult.StudentPresencePercentage >= _selectedCourse.PresenceTreshold)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Presence Percentage: {studentResult.StudentPresencePercentage}");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"Justified Absence Percentage: {studentResult.StudentJustifiedAbsencePercentage}");
+
+                if (studentResult.StudentHomeworkPercentage >= _selectedCourse.HomeworkTreshold)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Homework Percentage: {studentResult.StudentHomeworkPercentage}");
+
+                if (studentResult.StudentTestPercentage >= _selectedCourse.PresenceTreshold)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Test Percentage: {studentResult.StudentTestPercentage}");
+
+                if (studentResult.FinalResult == FinalResult.Passed)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.WriteLine($"Final Result: {studentResult.FinalResult} \n");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
     }
 }

@@ -260,7 +260,9 @@ namespace CourseDiary.Infrastructure
                         studentPresence.LessonDate = DateTime.Parse(dataReader["LessonDate"].ToString());
                         studentPresence.StudentId = int.Parse(dataReader["StudentId"].ToString());
                         studentPresence.CourseId = int.Parse(dataReader["CourseId"].ToString());
-                        Enum.TryParse<Presence>(dataReader["CourseId"].ToString(), out studentPresence.Presence);
+                        Presence presence;
+                        Enum.TryParse<Presence>(dataReader["CourseId"].ToString(), out presence);
+                        studentPresence.Presence = presence;
 
                         studentPresences.Add(studentPresence);
                     }
@@ -493,7 +495,7 @@ namespace CourseDiary.Infrastructure
 
                     dataReader.Close();
 
-                    commandText = "[Students].[Id] as [StudentId], [Students].[Name] as [StudentName], [Students].[Surname] as [StudentSurname], [Students].[Email] as [StudentEmail], [Students].[Password] as [StudentPassword], [Students].[BirthDate] as [StudentBirthDate], [StudentPresencePercentage], [StudentJustifiedAbsencePercentage], [StudentHomeworkPercentage], [StudentTestPercentage] FROM [StudentResults] FULL OUTER JOIN [Students] ON [StudentResults].[StudentId] = [Students].[Id] WHERE [StudentResults].[CourseResultsId] = @CourseResultsId";
+                    commandText = "[Students].[Id] as [StudentId], [Students].[Name] as [StudentName], [Students].[Surname] as [StudentSurname], [Students].[Email] as [StudentEmail], [Students].[Password] as [StudentPassword], [Students].[BirthDate] as [StudentBirthDate], [StudentPresencePercentage], [StudentJustifiedAbsencePercentage], [StudentHomeworkPercentage], [StudentTestPercentage], [FinalResult] FROM [StudentResults] FULL OUTER JOIN [Students] ON [StudentResults].[StudentId] = [Students].[Id] WHERE [StudentResults].[CourseResultsId] = @CourseResultsId";
                     command = new SqlCommand(commandText, connection);
                     command.Parameters.Add("@CourseResultsId", SqlDbType.Int).Value = courseResults.Id;
                     dataReader = await command.ExecuteReaderAsync();
@@ -516,6 +518,9 @@ namespace CourseDiary.Infrastructure
                         studentResult.StudentJustifiedAbsencePercentage = float.Parse(dataReader["StudentJustifiedAbsencePercentage"].ToString());
                         studentResult.StudentHomeworkPercentage = float.Parse(dataReader["StudentHomeworkPercentage"].ToString());
                         studentResult.StudentTestPercentage = float.Parse(dataReader["StudentTestPercentage"].ToString());
+                        FinalResult finalResult;
+                        Enum.TryParse<FinalResult>(dataReader["FinalResult"].ToString(), out finalResult);
+                        studentResult.FinalResult = finalResult;
 
                         studentResults.Add(studentResult);
                     }
